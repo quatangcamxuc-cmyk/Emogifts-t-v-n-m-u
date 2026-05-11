@@ -601,38 +601,60 @@ async function searchMarket(){
   };
   const srcList=srcs.map(s=>srcDesc[s]).join('\n- ');
 
-  const prompt=`Bạn là chuyên gia nghiên cứu thị trường quà tặng doanh nghiệp Việt Nam.
+  const prompt=`Bạn là chuyên gia nghiên cứu giá quà tặng doanh nghiệp. Hãy dùng web_search để tìm thông tin giá thực tế.
 
-Nhiệm vụ: Tìm kiếm và phân tích giá sản phẩm "${q}" từ các nguồn sau:
-- ${srcList}
+SẢN PHẨM: "${q}"
+ĐIỀU KIỆN: ${price}, số lượng: ${moq}${note?', yêu cầu: '+note:''}
+NGUỒN CẦN TÌM: ${srcs.join(', ')}
 
-Điều kiện: ${price}, số lượng: ${moq}${note?', yêu cầu: '+note:''}
+HƯỚNG DẪN TÌM KIẾM — thực hiện TỪNG BƯỚC:
 
-Hãy sử dụng web search để tìm giá thực tế hiện tại (${new Date().getFullYear()}) từ các nguồn trên.
+${srcs.includes('shopee')?`BƯỚC 1: Search Google: "${q} shopee site:shopee.vn" HOẶC "${q} giá rẻ shopee việt nam"
+→ Lấy tên sản phẩm, giá niêm yết, giá sau giảm, tên shop từ kết quả Google`:''}
 
-Trả về kết quả theo format:
+${srcs.includes('1688')?`BƯỚC 2: Search Google: "${q} 1688 wholesale price" HOẶC "${q} 批发价格 1688"
+→ Lấy giá CNY, tên xưởng, MOQ tối thiểu. Quy đổi: 1 CNY ≈ 3.500 VNĐ`:''}
 
-## 📊 Kết quả tìm kiếm: "${q}"
+${srcs.includes('taobao')?`BƯỚC 3: Search Google: "${q} taobao price" HOẶC "${q} 淘宝"
+→ Lấy giá bán lẻ Taobao làm tham chiếu`:''}
 
-### 🛒 Shopee Việt Nam
-[Bảng: Tên sp | Giá niêm yết | Giá sau giảm | Shop/Nguồn | Link tham khảo]
+${srcs.includes('web')?`BƯỚC 4: Search Google: "${q} site:quatangso1.vn OR site:giathuong.vn OR site:quatangdoanhnghiep.vn OR "${q}" quà tặng doanh nghiệp giá"
+→ Lấy giá từ các web quà tặng VN`:''}
 
-### 🏭 1688.com (Xưởng TQ)
-[Bảng: Tên sp | Giá CNY | Giá VNĐ quy đổi (~3.400đ/CNY) | MOQ | Ghi chú]
+SAU KHI TÌM XONG, trình bày kết quả theo format sau (dùng dữ liệu THỰC tìm được):
 
-### 🐰 Taobao
-[Bảng: Tên sp | Giá | Link]
+## 📊 Kết quả: "${q}"
 
-### 🌐 Web quà tặng VN
-[Bảng: Nguồn | Sản phẩm | Giá | Link]
+${srcs.includes('shopee')?`### 🛒 Shopee Việt Nam
+| Tên sản phẩm | Giá thấp nhất | Giá cao nhất | Đánh giá | Ghi chú |
+|---|---|---|---|---|
+[điền data thực]`:''}
 
-## 💡 Phân tích & Đề xuất
+${srcs.includes('1688')?`### 🏭 1688.com (Giá xưởng TQ)
+| Sản phẩm | Giá CNY | Giá VNĐ (~3.500đ/CNY) | MOQ | Link tham khảo |
+|---|---|---|---|---|
+[điền data thực]`:''}
 
-**So sánh giá:** [So sánh % chênh lệch giữa nguồn rẻ nhất và đắt nhất]
-**Nguồn tối ưu:** [Khuyến nghị nguồn nhập tốt nhất cho Emogifts]
-**Biên lợi nhuận ước tính:** [Nếu nhập từ nguồn X, bán giá Y → lãi Z%]
-**Rủi ro cần lưu ý:** [Chất lượng, thời gian, tỷ giá...]
-**Hành động tiếp theo:** [3 bước cụ thể để Emogifts khai thác nguồn này]`;
+${srcs.includes('taobao')?`### 🐰 Taobao
+| Sản phẩm | Giá CNY | Giá VNĐ | Ghi chú |
+|---|---|---|---|
+[điền data thực]`:''}
+
+${srcs.includes('web')?`### 🌐 Web quà tặng Việt Nam
+| Nguồn | Sản phẩm | Giá bán | Link |
+|---|---|---|---|
+[điền data thực]`:''}
+
+## 💡 Phân tích chiến lược cho Emogifts
+
+**Giá nhập tốt nhất:** [nguồn + mức giá]
+**Giá bán đề xuất:** [tính 35-45% margin]
+**Biên lợi nhuận ước tính:** [%]
+**Tổng chi phí nhập (gồm vận chuyển, thuế):** [ước tính]
+**Rủi ro cần lưu ý:** [1-2 điểm]
+**Hành động tiếp theo:** [3 bước cụ thể]
+
+LƯU Ý: Nếu không tìm được giá chính xác, hãy ghi rõ "Giá tham khảo" và range giá ước tính dựa trên sản phẩm tương tự. KHÔNG từ chối trả lời — hãy cố gắng tìm và đưa ra ước tính tốt nhất có thể.`;
 
   try{
     const txt = await callClaudeSearch(prompt);
