@@ -601,60 +601,55 @@ async function searchMarket(){
   };
   const srcList=srcs.map(s=>srcDesc[s]).join('\n- ');
 
-  const prompt=`Bạn là chuyên gia nghiên cứu giá quà tặng doanh nghiệp. Hãy dùng web_search để tìm thông tin giá thực tế.
+  const prompt=`Bạn là chuyên gia nghiên cứu giá quà tặng doanh nghiệp Việt Nam, có kiến thức sâu về thị trường nhập khẩu Trung Quốc.
 
-SẢN PHẨM: "${q}"
-ĐIỀU KIỆN: ${price}, số lượng: ${moq}${note?', yêu cầu: '+note:''}
-NGUỒN CẦN TÌM: ${srcs.join(', ')}
+SẢN PHẨM: "${q}" | Ngân sách: ${price} | Số lượng: ${moq}${note?' | Yêu cầu: '+note:''}
 
-HƯỚNG DẪN TÌM KIẾM — thực hiện TỪNG BƯỚC:
+NHIỆM VỤ — thực hiện 2 việc song song:
 
-${srcs.includes('shopee')?`BƯỚC 1: Search Google: "${q} shopee site:shopee.vn" HOẶC "${q} giá rẻ shopee việt nam"
-→ Lấy tên sản phẩm, giá niêm yết, giá sau giảm, tên shop từ kết quả Google`:''}
+1. SEARCH THỰC TẾ (web_search): Tìm giá từ web quà tặng Việt Nam
+   Query: "${q} in logo giá sỉ quà tặng doanh nghiệp"
+   Query: "${q} giá bán buôn quà tặng việt nam"
+   → Lấy tên đơn vị, giá niêm yết, giá sỉ từ kết quả tìm được
 
-${srcs.includes('1688')?`BƯỚC 2: Search Google: "${q} 1688 wholesale price" HOẶC "${q} 批发价格 1688"
-→ Lấy giá CNY, tên xưởng, MOQ tối thiểu. Quy đổi: 1 CNY ≈ 3.500 VNĐ`:''}
+2. PHÂN TÍCH CHUYÊN GIA (kiến thức thị trường): Ước tính giá 1688/Taobao/Shopee
+   → Dựa trên kiến thức về giá thị trường, đưa ra range giá có căn cứ
 
-${srcs.includes('taobao')?`BƯỚC 3: Search Google: "${q} taobao price" HOẶC "${q} 淘宝"
-→ Lấy giá bán lẻ Taobao làm tham chiếu`:''}
+Trả về đúng format sau:
 
-${srcs.includes('web')?`BƯỚC 4: Search Google: "${q} site:quatangso1.vn OR site:giathuong.vn OR site:quatangdoanhnghiep.vn OR "${q}" quà tặng doanh nghiệp giá"
-→ Lấy giá từ các web quà tặng VN`:''}
+## 📊 Nghiên cứu giá: "${q}"
 
-SAU KHI TÌM XONG, trình bày kết quả theo format sau (dùng dữ liệu THỰC tìm được):
-
-## 📊 Kết quả: "${q}"
-
-${srcs.includes('shopee')?`### 🛒 Shopee Việt Nam
-| Tên sản phẩm | Giá thấp nhất | Giá cao nhất | Đánh giá | Ghi chú |
+### 🌐 Đối thủ Việt Nam — Giá tìm được thực tế
+| Đơn vị | Sản phẩm cụ thể | Giá lẻ | Giá sỉ (≥100c) | Link |
 |---|---|---|---|---|
-[điền data thực]`:''}
+[ít nhất 4-6 dòng từ kết quả web search]
 
-${srcs.includes('1688')?`### 🏭 1688.com (Giá xưởng TQ)
-| Sản phẩm | Giá CNY | Giá VNĐ (~3.500đ/CNY) | MOQ | Link tham khảo |
+### 🏭 Ước tính giá nhập Trung Quốc *(tham khảo — cần xác nhận)*
+| Nguồn | Phân khúc | Giá ước tính (CNY) | Giá VNĐ | MOQ |
 |---|---|---|---|---|
-[điền data thực]`:''}
+| 1688 (xưởng) | Phổ thông | | | |
+| 1688 (xưởng) | Cao cấp | | | |
+| Taobao | Bán lẻ | | | |
 
-${srcs.includes('taobao')?`### 🐰 Taobao
-| Sản phẩm | Giá CNY | Giá VNĐ | Ghi chú |
+### 🛒 Ước tính Shopee VN *(tham khảo)*
+| Phân khúc | Giá thấp | Giá TB | Giá cao |
 |---|---|---|---|
-[điền data thực]`:''}
+| Shopee VN | | | |
 
-${srcs.includes('web')?`### 🌐 Web quà tặng Việt Nam
-| Nguồn | Sản phẩm | Giá bán | Link |
-|---|---|---|---|
-[điền data thực]`:''}
+---
+## 💡 Chiến lược cho Emogifts
 
-## 💡 Phân tích chiến lược cho Emogifts
+**Giá nhập tối ưu:** [nguồn cụ thể + mức giá]
+**Giá bán đề xuất:** [có 35-50% margin]
+**Lợi nhuận đơn 500sp:** [tính cụ thể: (giá bán - giá nhập) × 500]
+**Đối thủ cạnh tranh chính:** [tên + điểm yếu của họ]
+**Lợi thế Emogifts:** in logo, đóng gói, VAT, giao đúng hẹn
+**Hành động ngay:**
+1. [Cụ thể, có thể làm ngay hôm nay]
+2. [Bước tiếp theo trong 3 ngày]
+3. [Bước cuối trong tuần]
 
-**Giá nhập tốt nhất:** [nguồn + mức giá]
-**Giá bán đề xuất:** [tính 35-45% margin]
-**Biên lợi nhuận ước tính:** [%]
-**Tổng chi phí nhập (gồm vận chuyển, thuế):** [ước tính]
-**Rủi ro cần lưu ý:** [1-2 điểm]
-**Hành động tiếp theo:** [3 bước cụ thể]
-
-LƯU Ý: Nếu không tìm được giá chính xác, hãy ghi rõ "Giá tham khảo" và range giá ước tính dựa trên sản phẩm tương tự. KHÔNG từ chối trả lời — hãy cố gắng tìm và đưa ra ước tính tốt nhất có thể.`;
+*Lưu ý: Giá 1688/Taobao/Shopee là ước tính tham khảo. Paste link sản phẩm cụ thể vào ô tìm kiếm để có giá chính xác hơn.*`;
 
   try{
     const txt = await callClaudeSearch(prompt);
