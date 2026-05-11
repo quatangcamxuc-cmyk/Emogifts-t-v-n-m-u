@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emogifts — Tư Vấn Quà Tặng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0F1E3C;
+  --navy2: #1a2f55;
+  --gold: #C9A84C;
+  --gold2: #e8c97a;
+  --cream: #FAF7F2;
+  --cream2: #F2EDE3;
+  --text: #1a1a2e;
+  --text2: #4a4a6a;
+  --text3: #8888aa;
+  --border: rgba(201,168,76,0.2);
+  --white: #ffffff;
+  --success: #2d7a4f;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(15,30,60,0.12);
+  --shadow-sm: 0 2px 12px rgba(15,30,60,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--navy);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(201,168,76,0.25);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+.logo-sub {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.badge {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.tel-link {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── LAYOUT ── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── FORM PANEL ── */
+.panel {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.panel-header {
+  background: var(--navy);
+  padding: 20px 24px;
+  border-bottom: 2px solid var(--gold);
+}
+.panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--white);
+}
+.panel-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 3px;
+}
+.panel-body {
+  padding: 20px 24px;
+}
+
+/* ── PRESETS ── */
+.preset-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.preset {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--cream);
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.preset:hover {
+  background: var(--navy);
+  color: var(--gold2);
+  border-color: var(--navy);
+}
+
+/* ── FORM ── */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+.field select, .field input, .field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e8e4dc;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--cream);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  appearance: none;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.field select:focus, .field input:focus, .field textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+.field textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.divider {
+  height: 1px;
+  background: var(--cream2);
+  margin: 18px 0;
+}
+
+/* ── SUBMIT BUTTON ── */
+.btn-generate {
+  width: 100%;
+  padding: 13px;
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-generate::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.btn-generate:hover::after { transform: scaleX(1); }
+.btn-generate:hover { background: var(--navy2); transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn-generate:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── RESULT PANEL ── */
+.result-panel {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+.result-header {
+  background: var(--navy);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--gold);
+}
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: var(--white);
+  font-weight: 500;
+}
+.result-meta {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 2px;
+}
+.result-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-action {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-copy {
+  background: rgba(255,255,255,0.1);
+  color: var(--cream);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.btn-copy:hover { background: rgba(255,255,255,0.2); }
+.btn-print {
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+}
+.btn-print:hover { background: var(--gold2); }
+
+/* ── RESULT BODY ── */
+.result-body {
+  flex: 1;
+  padding: 28px;
+  overflow-y: auto;
+}
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 380px;
+  text-align: center;
+  color: var(--text3);
+}
+.empty-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+.empty-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.empty-sub { font-size: 13px; line-height: 1.6; max-width: 280px; }
+
+/* ── LOADING ── */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  gap: 20px;
+}
+.loading-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--cream2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-size: 14px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.6;
+}
+.loading-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text3);
+}
+.loading-step { display: flex; align-items: center; gap: 8px; }
+.step-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.loading-step:nth-child(2) .step-dot { animation-delay: 0.4s; }
+.loading-step:nth-child(3) .step-dot { animation-delay: 0.8s; }
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* ── RESULT CONTENT STYLES ── */
+.ai-result { line-height: 1.7; }
+.ai-result h1 { font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); margin:0 0 16px; border-bottom:2px solid var(--gold); padding-bottom:10px; }
+.ai-result h2 { font-family:'Playfair Display',serif; font-size:16px; color:var(--navy2); margin:22px 0 12px; }
+.ai-result h3 { font-size:14px; font-weight:600; color:var(--navy); margin:16px 0 8px; }
+.ai-result p { margin-bottom:12px; color:var(--text); font-size:14px; }
+.ai-result strong { color:var(--navy); font-weight:600; }
+.ai-result em { color:var(--text2); font-style:italic; }
+
+.ai-result table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.ai-result th {
+  background: var(--navy);
+  color: var(--gold2);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.ai-result td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--cream2);
+  vertical-align: top;
+  color: var(--text);
+}
+.ai-result tr:last-child td { border-bottom: none; }
+.ai-result tr:nth-child(even) td { background: #fafaf8; }
+.ai-result tr:hover td { background: #f5f2ea; }
+
+.ai-result ul, .ai-result ol {
+  margin: 8px 0 12px 20px;
+  font-size: 14px;
+}
+.ai-result li { margin-bottom: 5px; color: var(--text); }
+.ai-result blockquote {
+  border-left: 3px solid var(--gold);
+  padding: 10px 16px;
+  background: var(--cream);
+  border-radius: 0 8px 8px 0;
+  margin: 12px 0;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+/* ── HISTORY ── */
+.history-section {
+  margin-top: 20px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.history-header {
+  padding: 14px 20px;
+  background: var(--cream2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.history-clear {
+  font-size: 11px;
+  color: var(--text3);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.history-clear:hover { color: #c0392b; }
+.history-list { padding: 8px 0; max-height: 180px; overflow-y: auto; }
+.history-item {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-bottom: 1px solid var(--cream2);
+}
+.history-item:last-child { border-bottom: none; }
+.history-item:hover { background: var(--cream); }
+.history-dot {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.history-info { flex: 1; min-width: 0; }
+.history-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.history-empty {
+  padding: 16px 20px;
+  font-size: 13px;
+  color: var(--text3);
+  text-align: center;
+}
+
+/* ── WATERMARK ── */
+.watermark {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--text3);
+  border-top: 1px solid var(--cream2);
+}
+.watermark a { color: var(--gold); text-decoration: none; }
+
+/* ── API KEY MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,30,60,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal {
+  background: var(--white);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-head {
+  background: var(--navy);
+  padding: 20px 24px;
+  border-bottom: 2px solid var(--gold);
+}
+.modal-head h3 {
+  font-family:'Playfair Display',serif;
+  color: var(--white);
+  font-size: 17px;
+  font-weight:500;
+}
+.modal-head p { color:rgba(255,255,255,0.55); font-size:13px; margin-top:4px; }
+.modal-body { padding: 24px; }
+.modal-body label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:8px; }
+.modal-body input {
+  width:100%; padding:11px 14px;
+  border:1.5px solid #e8e4dc;
+  border-radius:8px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px; color:var(--text);
+  background:var(--cream);
+  outline:none; letter-spacing:0.04em;
+}
+.modal-body input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+.modal-hint {
+  margin-top:10px;
+  background: #fffbf0;
+  border:1px solid rgba(201,168,76,0.3);
+  border-radius:8px;
+  padding:12px 14px;
+  font-size:12px;
+  color: var(--text2);
+  line-height:1.6;
+}
+.modal-hint a { color:var(--gold); text-decoration:none; font-weight:600; }
+.modal-actions { display:flex; gap:10px; margin-top:16px; }
+.btn-modal-save {
+  flex:1; padding:11px;
+  background:var(--navy); color:var(--white);
+  border:none; border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600;
+  cursor:pointer; transition:opacity .15s;
+}
+.btn-modal-save:hover { opacity:.85; }
+.btn-modal-cancel {
+  padding:11px 18px;
+  background:var(--cream); color:var(--text2);
+  border:1.5px solid #e8e4dc; border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:14px;
+  cursor:pointer;
+}
+.btn-modal-cancel:hover { background:var(--cream2); }
+.key-status {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; padding:4px 10px;
+  border-radius:20px; cursor:pointer;
+  border:none; font-family:'DM Sans',sans-serif;
+  transition:all .15s;
+}
+.key-set { background:rgba(45,122,79,0.15); color:#2d7a4f; }
+.key-unset { background:rgba(192,57,43,0.15); color:#c0392b; }
+
+/* ── PRINT ── */
+@media print {
+  header, .panel, .history-section, .result-actions, .watermark { display: none !important; }
+  .container { grid-template-columns: 1fr; }
+  .result-panel { box-shadow: none; min-height: auto; }
+  .result-body { padding: 0; }
+  .ai-result table { box-shadow: none; }
+  body { background: white; }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .container { grid-template-columns: 1fr; padding: 16px; }
+  .field-row { grid-template-columns: 1fr; }
+  header { padding: 0 16px; }
+  .logo-sub, .badge { display: none; }
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--navy);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  border-left: 3px solid var(--gold);
+  box-shadow: var(--shadow);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎁</div>
+    <div>
+      <div class="logo-text">Emogifts</div>
+      <div class="logo-sub">Quà Tặng Cảm Xúc</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="key-status key-unset" id="keyStatusBtn" onclick="openKeyModal()">🔑 Chưa có API key</button>
+    <a href="tel:0912068999" class="tel-link">📞 0912 068 999</a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEFT: FORM -->
+  <div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Thông tin khách hàng</div>
+        <div class="panel-sub">Điền đầy đủ để AI tư vấn chính xác nhất</div>
+      </div>
+      <div class="panel-body">
+
+        <div class="preset-label">Kịch bản thường gặp</div>
+        <div class="presets">
+          <button class="preset" onclick="fillPreset('bank')">🏦 Ngân hàng tri ân</button>
+          <button class="preset" onclick="fillPreset('event')">🏆 Hội nghị sự kiện</button>
+          <button class="preset" onclick="fillPreset('tet')">🧧 Quà Tết DN</button>
+          <button class="preset" onclick="fillPreset('edu')">🎓 Trường học</button>
+          <button class="preset" onclick="fillPreset('military')">⭐ Quân đội</button>
+          <button class="preset" onclick="fillPreset('health')">🏥 Y tế / Bệnh viện</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label>Tên khách hàng / Công ty</label>
+          <input type="text" id="customerName" placeholder="VD: Ngân hàng VPBank, Công ty ABC...">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Loại khách hàng</label>
+            <select id="customerType">
+              <option value="Ngân hàng / Tài chính">🏦 Ngân hàng / Tài chính</option>
+              <option value="Nhà nước / Quân đội">🏛️ Nhà nước / Quân đội</option>
+              <option value="Trường học / Giáo dục">🎓 Trường học / Giáo dục</option>
+              <option value="Y tế / Bệnh viện">🏥 Y tế / Bệnh viện</option>
+              <option value="Doanh nghiệp tư nhân">🏢 DN tư nhân</option>
+              <option value="Tổ chức sự kiện">🎪 Tổ chức sự kiện</option>
+              <option value="Bán lẻ / FMCG">🛍️ Bán lẻ / FMCG</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Dịp tặng</label>
+            <select id="occasion">
+              <option value="Tri ân khách hàng">Tri ân khách hàng</option>
+              <option value="Hội nghị / Sự kiện">Hội nghị / Sự kiện</option>
+              <option value="Khen thưởng nhân viên">Khen thưởng nhân viên</option>
+              <option value="Kỷ niệm thành lập">Kỷ niệm thành lập</option>
+              <option value="Tết Nguyên Đán">Tết Nguyên Đán</option>
+              <option value="Lễ tốt nghiệp">Lễ tốt nghiệp</option>
+              <option value="Khai trương">Khai trương</option>
+              <option value="Hội thao / Thể dục">Hội thao / Thể dục</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Ngân sách / sản phẩm</label>
+            <select id="budget">
+              <option value="dưới 50.000đ">Dưới 50.000đ</option>
+              <option value="50.000 – 150.000đ" selected>50k – 150.000đ</option>
+              <option value="150.000 – 300.000đ">150k – 300.000đ</option>
+              <option value="300.000 – 600.000đ">300k – 600.000đ</option>
+              <option value="600.000 – 1.000.000đ">600k – 1 triệu</option>
+              <option value="trên 1.000.000đ">Trên 1 triệu</option>
+              <option value="nhiều mức giá, cần combo">Nhiều mức (cần combo)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Số lượng đặt</label>
+            <select id="quantity">
+              <option value="nhỏ lẻ 1–50 sản phẩm">Nhỏ lẻ (1–50 sp)</option>
+              <option value="trung bình 50–500 sản phẩm" selected>Vừa (50–500 sp)</option>
+              <option value="lớn 500–2.000 sản phẩm">Lớn (500–2k sp)</option>
+              <option value="cực lớn trên 2.000 sản phẩm">Cực lớn (2k+ sp)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Số sản phẩm gợi ý</label>
+            <select id="numProducts">
+              <option value="5">5 sản phẩm</option>
+              <option value="8" selected>8 sản phẩm</option>
+              <option value="10">10 sản phẩm</option>
+              <option value="12">12 sản phẩm</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Định dạng output</label>
+            <select id="outputFormat">
+              <option value="table">📋 Bảng tư vấn chi tiết</option>
+              <option value="proposal">📦 Đề xuất 3 nhóm</option>
+              <option value="email">✉️ Email gửi khách</option>
+              <option value="quote">💰 Báo giá sơ bộ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Yêu cầu đặc biệt & ghi chú</label>
+          <textarea id="notes" placeholder="VD: Cần in logo nổi bật, chất liệu cao cấp, giao trước 20/6, phong cách sang trọng, cần hóa đơn VAT, khách hay mua pha lê..."></textarea>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="generate()">
+          <span>✨</span>
+          <span id="btnText">Tạo bảng tư vấn với AI</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section" style="margin-top:16px">
+      <div class="history-header">
+        <span>📂 Lịch sử tư vấn</span>
+        <button class="history-clear" onclick="clearHistory()">Xóa tất cả</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">Chưa có lịch sử tư vấn</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULT -->
+  <div>
+    <div class="result-panel">
+      <div class="result-header">
+        <div>
+          <div class="result-title" id="resultTitle">Kết quả tư vấn</div>
+          <div class="result-meta" id="resultMeta">Nhập thông tin bên trái và nhấn "Tạo bảng tư vấn"</div>
+        </div>
+        <div class="result-actions">
+          <button class="btn-action btn-copy" onclick="copyResult()" id="copyBtn" style="display:none">📋 Copy</button>
+          <button class="btn-action btn-print" onclick="window.print()" id="printBtn" style="display:none">🖨️ In</button>
+        </div>
+      </div>
+      <div class="result-body" id="resultBody">
+        <div class="empty-state">
+          <div class="empty-icon">🎁</div>
+          <div class="empty-title">Sẵn sàng tư vấn</div>
+          <div class="empty-sub">Chọn kịch bản nhanh hoặc điền thông tin khách hàng → AI sẽ gợi ý sản phẩm phù hợp từ catalog Emogifts</div>
+        </div>
+      </div>
+      <div class="watermark">
+        Emogifts — Quà Tặng Cảm Xúc &nbsp;|&nbsp;
+        <a href="https://quatangcamxuc.bitrix24.shop">quatangcamxuc.bitrix24.shop</a> &nbsp;|&nbsp;
+        0912 068 999 &nbsp;|&nbsp; Công cụ nội bộ NVKD
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="keyModal" style="display:none">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>🔑 Cài đặt API Key</h3>
+      <p>Nhập key để app kết nối Claude AI</p>
+    </div>
+    <div class="modal-body">
+      <label>Anthropic API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+      <div class="modal-hint">
+        <strong>Lấy API key ở đâu?</strong><br>
+        1. Vào <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a><br>
+        2. Nhấn <strong>"Create Key"</strong> → copy key<br>
+        3. Paste vào ô trên → Lưu<br><br>
+        <strong>Lưu ý:</strong> Key được lưu trong máy tính của bạn, không gửi đi đâu khác ngoài Anthropic.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-save" onclick="saveApiKey()">✓ Lưu & Tiếp tục</button>
+        <button class="btn-modal-cancel" onclick="closeKeyModal()">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CATALOG = `
+=== CATALOG EMOGIFTS — quatangcamxuc.bitrix24.shop ===
+
+DANH MỤC SẢN PHẨM (9 danh mục, ~226 sản phẩm):
+
+1. CÔNG NGHỆ (11 sp) — phù hợp quà tặng hiện đại, trẻ trung
+   - Loa bluetooth Hoco HC22: thiết kế nhỏ gọn, âm thanh tốt, in logo được
+   - Pin sạc dự phòng Hoco J100: 10.000mAh, vỏ nhôm cao cấp
+   - Cáp sạc 3in1 REMAX dây rút: đa năng iPhone/Android/Type-C
+   - Cáp sạc đa năng dây rút Remax: tiện lợi, phù hợp phát mãi
+   - Tai nghe bluetooth không dây: thiết kế sang
+   - USB đa năng in logo, Đồng hồ thông minh band...
+   GIÁ THAM KHẢO: 50.000đ – 500.000đ/sp
+
+2. GIA DỤNG (108 sp) — đa dạng nhất, phù hợp mọi đối tượng
+   - Bình đựng trà Chu đậu S2: gốm thủ công Hải Dương, 530.000đ, rất sang
+   - Cốc sứ lùn Daiichi life: 55.000đ, in logo đẹp
+   - Áo mưa cánh dơi SPA: 73.000đ, in logo mặt sau
+   - Bình giữ nhiệt inox: nhiều size, in laser logo
+   - Ủu ngâm chân: 47.000đ, phù hợp quà tri ân sức khỏe
+   - Nồi inox cao cấp, Chảo chống dính, Máy xay sinh tố
+   - Bộ dao kéo inox, Khay tre đựng đồ, Bình lọc nước
+   - Gối massage điện, Đệm ngồi văn phòng...
+   GIÁ THAM KHẢO: 47.000đ – 800.000đ/sp
+
+3. DU LỊCH (7 sp) — phù hợp sự kiện, team building
+   - Ví đựng hộ chiếu da PU: in logo, giao lưu quốc tế
+   - Túi đựng mỹ phẩm du lịch: nhỏ gọn, in tên
+   - Đồng hồ báo thức du lịch
+   - Gối cổ hỗ trợ ngủ trên máy bay
+   GIÁ THAM KHẢO: 80.000đ – 300.000đ/sp
+
+4. VĂN PHÒNG (19 sp) — quà tặng chuyên nghiệp, phù hợp corporate
+   - Bút ký cao cấp hộp gỗ: in logo nắp bút, sang trọng
+   - Sổ tay da PU A5: in tên, logo, phù hợp tặng cấp quản lý
+   - Túi đựng laptop 15": in logo, vải cao cấp
+   - Đế sạc không dây 15W: in logo, công nghệ cao
+   - Đồng hồ để bàn: in logo, tặng đối tác lâu năm
+   - Bộ namecard holder + bút: set quà sang
+   - Đèn LED đọc sách kẹp, Ấm đun nước mini văn phòng
+   GIÁ THAM KHẢO: 80.000đ – 600.000đ/sp
+
+5. MẸ VÀ BÉ (9 sp) — quà tặng độc đáo, nhân văn
+   - Bộ đồ chơi gỗ Montessori: an toàn, giáo dục
+   - Khăn sữa organic: mềm mại, in tên bé
+   - Bình sữa cổ rộng chống sặc
+   - Gối chống trào ngược, Nước tẩy rửa hữu cơ bé
+   GIÁ THAM KHẢO: 80.000đ – 350.000đ/sp
+
+6. PHÁT MÃI (13 sp) — phù hợp số lượng lớn, chi phí thấp
+   - Móc khóa kim loại in logo: 15.000đ – 35.000đ
+   - Bút bi in logo: 8.000đ – 25.000đ
+   - Tập vở in logo: 20.000đ – 40.000đ
+   - Nón lưỡi trai in logo: 45.000đ – 80.000đ
+   - Túi vải canvas in logo: 35.000đ – 70.000đ
+   - Sticker/ Lịch bàn in logo
+   GIÁ THAM KHẢO: 8.000đ – 80.000đ/sp
+
+7. ẤM CHÉN - BÌNH CỐC (21 sp) — quà tặng tinh tế, truyền thống
+   - Bộ cốc Ocean 0411: 163.080đ, thuỷ tinh cao cấp, set 6 cái
+   - Bộ ấm trà sứ Minh Long: phong cách Á Đông, sang trọng
+   - Bình thuỷ tinh borosilicate: in UV logo, cao cấp
+   - Cốc sứ in logo: 45.000đ – 120.000đ, nhiều mẫu
+   - Bình giữ nhiệt Thermos cao cấp: 250.000đ – 450.000đ
+   - Ấm đất nung Bát Tràng: thủ công, nghệ thuật
+   GIÁ THAM KHẢO: 45.000đ – 500.000đ/sp
+
+8. CẶP TÚI - BALÔ - VALI (5 sp) — quà tặng giá trị cao
+   - Balo laptop 15.6" chống nước: in logo, dây phản quang
+   - Túi xách da PU doanh nhân: in chìm logo, sang
+   - Vali kéo 20" (cabin): in logo nổi, sự kiện cao cấp
+   - Túi vải bố canvas lớn: thân thiện môi trường
+   GIÁ THAM KHẢO: 200.000đ – 900.000đ/sp
+
+9. BIỂU TRƯNG - LOGO (33 sp) — CỐT LÕI, CHUYÊN SÂU NHẤT
+   - Cúp pha lê gắn sao XANH: 561.600đ, sang trọng, khắc tên được
+   - Cúp pha lê gắn sao VÀNG: 400.000đ, phổ biến, tặng khen thưởng
+   - Đĩa đồng D14CM: 864.000đ, tặng đối tác VIP, cấp cao
+   - Bằng khen đồng/vàng: 135.000đ, in nội dung theo yêu cầu
+   - Biểu trưng tốt nghiệp VSC: 60.000đ, tặng học sinh sinh viên
+   - Huy chương hội khoẻ phù đổng: 45.900đ, tặng hội thao
+   - Huy hiệu SHB 25mm nam châm: 30.240đ, cài áo sự kiện
+   - Huy hiệu kim loại mạ vàng/bạc: nhiều size, in logo tinh xảo
+   - Biểu trưng pha lê đế đen: nhiều mẫu, tặng đối tác DN
+   - Biểu trưng kim loại tròn quân đội: hải quân, bộ đội
+   - Cúp acrylic trong suốt: khắc laser 3D bên trong
+   GIÁ THAM KHẢO: 30.000đ – 1.200.000đ/sp
+
+THẾ MẠNH EMOGIFTS:
+✓ In ấn logo/tên theo yêu cầu (laser, UV, thêu, dập nổi)
+✓ Đóng gói hộp quà sang trọng theo yêu cầu
+✓ Giao hàng đúng hạn, đúng địa điểm theo yêu cầu
+✓ Có hóa đơn VAT đầy đủ
+✓ Hỗ trợ thủ tục đấu thầu, mua sắm công
+✓ Chính sách chiết khấu linh hoạt theo số lượng
+✓ Tư vấn chuyên sâu theo ngành, theo dịp tặng
+✓ Mạnh nhất: Biểu trưng pha lê, huy chương, bộ ấm chén
+
+LIÊN HỆ: 0912 068 999 | quatangcamxuc.bitrix24.shop
+`;
+
+const FORMAT_INSTRUCTIONS = {
+  table: `Tạo BẢNG TƯ VẤN CHI TIẾT theo mẫu sau:
+
+## Bảng gợi ý sản phẩm
+
+Tạo bảng markdown với các cột: STT | Tên sản phẩm | Đơn giá (VNĐ) | Mô tả & USP | Phù hợp vì | Link tham khảo
+
+Sau bảng, thêm:
+**Ghi chú tư vấn:** (2-3 dòng về lý do lựa chọn và điểm nổi bật)
+**Khuyến nghị đặt hàng:** (gợi ý combo hoặc ưu tiên)`,
+
+  proposal: `Tạo ĐỀ XUẤT THEO 3 NHÓM:
+
+## 🥇 Nhóm 1 — Sản phẩm chủ lực (3-4 sp ưu tiên nhất)
+[Mỗi sp: Tên | Giá | Tại sao chọn | In logo được không]
+
+## 🥈 Nhóm 2 — Phương án thay thế (2-3 sp)
+[Phương án khác nếu KH muốn đổi hướng]
+
+## 🎁 Nhóm 3 — Gợi ý combo (1-2 set)
+[Kết hợp sp để tăng giá trị đơn hàng]
+
+**Tổng kết & chiến lược tư vấn:**`,
+
+  email: `Viết EMAIL HOÀN CHỈNH gửi khách hàng (tiếng Việt, chuyên nghiệp, thân thiện):
+
+TIÊU ĐỀ EMAIL: [viết tiêu đề hấp dẫn]
+
+---
+[Lời chào + giới thiệu ngắn gọn về Emogifts]
+
+[Bảng sản phẩm gợi ý - format gọn]
+
+[Điểm khác biệt khi chọn Emogifts]
+
+[Call to action + thông tin liên hệ]
+
+Trân trọng,
+[Tên NVKD]
+Emogifts — Quà Tặng Cảm Xúc
+Hotline: 0912 068 999
+Website: quatangcamxuc.bitrix24.shop
+---`,
+
+  quote: `Tạo BÁO GIÁ SƠ BỘ theo format:
+
+## Báo giá tham khảo — [Tên KH/dịp tặng]
+
+**Thông tin đơn hàng:**
+- Đơn vị: [tên khách]
+- Dịp: [dịp tặng]
+- Số lượng dự kiến: [qty]
+- Thời gian giao hàng dự kiến: [ước tính]
+
+**Bảng báo giá:**
+[Bảng: STT | Sản phẩm | Đvt | SL | Đơn giá | Thành tiền | Ghi chú]
+
+**Tổng cộng (ước tính):** [range giá]
+**Chiết khấu theo số lượng:** [% chiết khấu ước tính]
+**Giá trị đơn hàng sau CK:** [ước tính]
+
+*Lưu ý: Đây là báo giá tham khảo. Để nhận báo giá chính xác với ảnh sản phẩm và mẫu in logo, vui lòng liên hệ NVKD.*`
+};
+
+const PRESETS_DATA = {
+  bank: {
+    customerType: 'Ngân hàng / Tài chính',
+    occasion: 'Tri ân khách hàng',
+    budget: '200.000 – 500.000đ',
+    quantity: 'lớn 500–2.000 sản phẩm',
+    outputFormat: 'proposal',
+    notes: 'Cần in logo ngân hàng nổi bật, phong cách sang trọng và chuyên nghiệp, đóng gói đẹp, cần hóa đơn VAT. Ưu tiên sản phẩm cao cấp thể hiện đẳng cấp thương hiệu.'
+  },
+  event: {
+    customerType: 'Tổ chức sự kiện',
+    occasion: 'Hội nghị / Sự kiện',
+    budget: '50.000 – 150.000đ',
+    quantity: 'trung bình 50–500 sản phẩm',
+    outputFormat: 'table',
+    notes: 'Cần giao nhanh trong 7-10 ngày, in logo sự kiện rõ nét, phù hợp trao tay tại hội trường, gọn nhẹ dễ mang về.'
+  },
+  tet: {
+    customerType: 'Doanh nghiệp tư nhân',
+    occasion: 'Tết Nguyên Đán',
+    budget: 'nhiều mức giá, cần combo',
+    quantity: 'lớn 500–2.000 sản phẩm',
+    outputFormat: 'proposal',
+    notes: 'Quà Tết sang trọng, đóng hộp quà đẹp kèm thiệp chúc Tết, in logo công ty. Cần 2-3 mức giá khác nhau cho cấp nhân viên, cấp quản lý và đối tác VIP.'
+  },
+  edu: {
+    customerType: 'Trường học / Giáo dục',
+    occasion: 'Khen thưởng nhân viên',
+    budget: 'dưới 50.000đ',
+    quantity: 'lớn 500–2.000 sản phẩm',
+    outputFormat: 'table',
+    notes: 'Huy chương, cúp khen thưởng học sinh sinh viên, bằng khen. Có thể khắc tên trường và nội dung khen thưởng. Yêu cầu có hóa đơn tài chính.'
+  },
+  military: {
+    customerType: 'Nhà nước / Quân đội',
+    occasion: 'Kỷ niệm thành lập',
+    budget: '300.000 – 600.000đ',
+    quantity: 'trung bình 50–500 sản phẩm',
+    outputFormat: 'proposal',
+    notes: 'Biểu trưng kim loại, pha lê, huy chương cao cấp tặng cán bộ sĩ quan nhân ngày kỷ niệm. Chất liệu bền đẹp, phong cách trang trọng, có thể khắc ngày kỷ niệm và tên đơn vị.'
+  },
+  health: {
+    customerType: 'Y tế / Bệnh viện',
+    occasion: 'Khen thưởng nhân viên',
+    budget: '150.000 – 300.000đ',
+    quantity: 'trung bình 50–500 sản phẩm',
+    outputFormat: 'table',
+    notes: 'Quà tặng dịp ngày Thầy thuốc Việt Nam 27/2 hoặc khen thưởng y bác sĩ xuất sắc. Thực dụng, chất lượng tốt, ý nghĩa sức khỏe. In logo bệnh viện/phòng khám.'
+  }
+};
+
+let history = JSON.parse(localStorage.getItem('emogifts_history') || '[]');
+let currentResult = '';
+
+// ── API KEY ──────────────────────────────────────
+function getApiKey() {
+  return localStorage.getItem('emogifts_api_key') || '';
+}
+function openKeyModal() {
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('keyModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
+}
+function closeKeyModal() {
+  document.getElementById('keyModal').style.display = 'none';
+}
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-')) {
+    showToast('❌ Key không hợp lệ — phải bắt đầu bằng sk-');
+    return;
+  }
+  localStorage.setItem('emogifts_api_key', key);
+  updateKeyStatus();
+  closeKeyModal();
+  showToast('✅ Đã lưu API key thành công!');
+}
+function updateKeyStatus() {
+  const btn = document.getElementById('keyStatusBtn');
+  const hasKey = !!getApiKey();
+  btn.className = 'key-status ' + (hasKey ? 'key-set' : 'key-unset');
+  btn.textContent = hasKey ? '🔑 API key đã cài' : '🔑 Chưa có API key';
+}
+// Close modal on overlay click
+document.getElementById('keyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeKeyModal();
+});
+// Enter key to save
+document.getElementById('apiKeyInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') saveApiKey();
+});
+
+function fillPreset(key) {
+  const p = PRESETS_DATA[key];
+  if (!p) return;
+  document.getElementById('customerType').value = p.customerType;
+  document.getElementById('occasion').value = p.occasion;
+  document.getElementById('budget').value = p.budget;
+  document.getElementById('quantity').value = p.quantity;
+  document.getElementById('outputFormat').value = p.outputFormat;
+  document.getElementById('notes').value = p.notes;
+  document.getElementById('customerName').focus();
+}
+
+async function generate() {
+  const btn = document.getElementById('generateBtn');
+  const btnText = document.getElementById('btnText');
+  const resultBody = document.getElementById('resultBody');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMeta = document.getElementById('resultMeta');
+
+  const name = document.getElementById('customerName').value.trim();
+  const type = document.getElementById('customerType').value;
+  const occasion = document.getElementById('occasion').value;
+  const budget = document.getElementById('budget').value;
+  const qty = document.getElementById('quantity').value;
+  const num = document.getElementById('numProducts').value;
+  const fmt = document.getElementById('outputFormat').value;
+  const notes = document.getElementById('notes').value.trim();
+
+  const clientLabel = name || type;
+
+  const prompt = `Bạn là chuyên viên tư vấn quà tặng doanh nghiệp cấp cao của Emogifts.
+
+CATALOG SẢN PHẨM EMOGIFTS:
+${CATALOG}
+
+THÔNG TIN KHÁCH HÀNG CẦN TƯ VẤN:
+- Tên KH/Công ty: ${name || 'Chưa có'}
+- Loại KH: ${type}
+- Dịp tặng: ${occasion}
+- Ngân sách/sp: ${budget}
+- Số lượng: ${qty}
+- Yêu cầu đặc biệt: ${notes || 'Không có'}
+- Số sản phẩm cần gợi ý: ${num} sản phẩm
+
+ĐỊNH DẠNG OUTPUT YÊU CẦU:
+${FORMAT_INSTRUCTIONS[fmt]}
+
+NGUYÊN TẮC TƯ VẤN:
+1. Chỉ gợi ý sản phẩm CÓ TRONG catalog Emogifts
+2. Giá phải phù hợp với ngân sách "${budget}"
+3. Ưu tiên sản phẩm có thể in logo, khắc tên
+4. Tư vấn thực chiến, thuyết phục, phù hợp B2B Việt Nam
+5. Nếu loại KH là Nhà nước/Quân đội: ưu tiên biểu trưng, huy chương, pha lê
+6. Nếu ngân sách thấp: ưu tiên phát mãi, huy hiệu, cốc sứ
+7. Luôn nhắc đến khả năng in logo và chính sách chiết khấu theo số lượng
+8. Kết thúc bằng: "📞 Liên hệ nhận báo giá chính xác: 0912 068 999 | quatangcamxuc.bitrix24.shop"`;
+
+  btn.disabled = true;
+  btnText.textContent = 'Đang phân tích...';
+  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('printBtn').style.display = 'none';
+
+  resultTitle.textContent = `Tư vấn — ${clientLabel}`;
+  resultMeta.textContent = `${occasion} · ${budget} · ${qty}`;
+
+  resultBody.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-ring"></div>
+      <div class="loading-text"><strong>Claude đang phân tích catalog...</strong></div>
+      <div class="loading-steps">
+        <div class="loading-step"><div class="step-dot"></div>Đối chiếu ngân sách & danh mục phù hợp</div>
+        <div class="loading-step"><div class="step-dot"></div>Lọc sản phẩm theo loại khách & dịp tặng</div>
+        <div class="loading-step"><div class="step-dot"></div>Soạn nội dung tư vấn chuyên nghiệp</div>
+      </div>
+    </div>`;
+
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    btn.disabled = false;
+    btnText.textContent = 'Tạo bảng tư vấn với AI';
+    resultBody.innerHTML = `<div style="padding:32px;text-align:center">
+      <div style="font-size:42px;margin-bottom:16px">🔑</div>
+      <div style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px">Cần cài API Key trước</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6">
+        Nhấn nút <strong>"🔑 Chưa có API key"</strong> góc trên phải<br>để nhập key và bắt đầu sử dụng
+      </div>
+      <button onclick="openKeyModal()" style="padding:11px 24px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;">
+        🔑 Cài API Key ngay
+      </button>
+    </div>`;
+    return;
+  }
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const errMsg = errData?.error?.message || `HTTP ${res.status}`;
+      // If key invalid, clear it
+      if (res.status === 401) {
+        localStorage.removeItem('emogifts_api_key');
+        updateKeyStatus();
+        throw new Error('API key không hợp lệ hoặc hết hạn. Vui lòng cài lại key.');
+      }
+      throw new Error(errMsg);
+    }
+    const data = await res.json();
+
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    currentResult = text;
+    renderResult(text);
+
+    // Save history
+    const entry = {
+      id: Date.now(),
+      label: clientLabel,
+      occasion, budget,
+      time: new Date().toLocaleString('vi-VN', {hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}),
+      result: text
+    };
+    history.unshift(entry);
+    if (history.length > 20) history = history.slice(0, 20);
+    localStorage.setItem('emogifts_history', JSON.stringify(history));
+    renderHistory();
+
+    document.getElementById('copyBtn').style.display = 'flex';
+    document.getElementById('printBtn').style.display = 'flex';
+    showToast('✅ Đã tạo bảng tư vấn thành công!');
+
+  } catch(e) {
+    const isCors = e.message.includes('Failed to fetch') || e.message.includes('NetworkError');
+    resultBody.innerHTML = `<div style="padding:24px;background:#fdf0ee;border-radius:8px;margin:8px">
+      <div style="font-size:15px;font-weight:600;color:#c0392b;margin-bottom:6px">❌ ${isCors ? 'Lỗi CORS / Kết nối' : 'Lỗi API'}</div>
+      <div style="font-size:13px;color:#922b21;margin-bottom:12px">${e.message}</div>
+      ${isCors ? `<div style="font-size:13px;color:#555;background:white;padding:12px;border-radius:6px;line-height:1.7">
+        <strong>Nguyên nhân:</strong> Trình duyệt chặn request từ file cục bộ (file://).<br><br>
+        <strong>Cách fix nhanh nhất:</strong><br>
+        📌 Dùng <b>Chrome</b> → kéo file vào tab mới → thêm vào đầu URL:<br>
+        <code style="background:#f5f5f5;padding:2px 6px;border-radius:4px;font-size:12px">--disable-web-security</code> khi mở Chrome<br><br>
+        <strong>Hoặc cách đơn giản hơn:</strong> Upload file lên Google Drive → Mở bằng Google Docs Viewer → dùng link đó.
+      </div>` : ''}
+    </div>`;
+    showToast('❌ ' + (isCors ? 'Lỗi kết nối — xem hướng dẫn' : e.message));
+  }
+
+  btn.disabled = false;
+  btnText.textContent = 'Tạo bảng tư vấn với AI';
+}
+
+function renderResult(text) {
+  let html = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // headings
+    .replace(/^#{4} (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^#{3} (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^#{2} (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^#{1} (.+)$/gm,'<h1>$1</h1>')
+    // bold/italic
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    // blockquote
+    .replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>')
+    // lists
+    .replace(/^[-•] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$&</ul>')
+    .replace(/<\/ul>\s*<ul>/g,'');
+
+  // Tables
+  const tableRegex = /(\|.+\|\n)+/g;
+  html = html.replace(tableRegex, (match) => {
+    const lines = match.trim().split('\n').filter(l => l.trim() && !l.match(/^\|[\s\-:|]+\|$/));
+    if (lines.length < 2) return match;
+    const parseRow = l => l.split('|').slice(1,-1).map(c => c.trim());
+    const header = parseRow(lines[0]).map(h => `<th>${h}</th>`).join('');
+    const rows = lines.slice(1).map(l => `<tr>${parseRow(l).map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+    return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+  });
+
+  html = html.replace(/\n\n+/g,'<br><br>').replace(/\n/g,'<br>');
+
+  document.getElementById('resultBody').innerHTML = `<div class="ai-result">${html}</div>`;
+}
+
+function copyResult() {
+  if (!currentResult) return;
+  navigator.clipboard.writeText(currentResult).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Đã copy!';
+    setTimeout(() => btn.innerHTML = '📋 Copy', 1800);
+    showToast('📋 Đã copy nội dung tư vấn!');
+  });
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!history.length) {
+    list.innerHTML = '<div class="history-empty">Chưa có lịch sử tư vấn</div>';
+    return;
+  }
+  list.innerHTML = history.map(h => `
+    <div class="history-item" onclick="loadHistory(${h.id})">
+      <div class="history-dot"></div>
+      <div class="history-info">
+        <div class="history-name">${h.label} — ${h.occasion}</div>
+        <div class="history-time">${h.time} · ${h.budget}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(id) {
+  const entry = history.find(h => h.id === id);
+  if (!entry) return;
+  currentResult = entry.result;
+  document.getElementById('resultTitle').textContent = `Tư vấn — ${entry.label}`;
+  document.getElementById('resultMeta').textContent = `${entry.occasion} · ${entry.budget} · ${entry.time}`;
+  renderResult(entry.result);
+  document.getElementById('copyBtn').style.display = 'flex';
+  document.getElementById('printBtn').style.display = 'flex';
+}
+
+function clearHistory() {
+  if (!confirm('Xóa toàn bộ lịch sử tư vấn?')) return;
+  history = [];
+  localStorage.removeItem('emogifts_history');
+  renderHistory();
+  showToast('🗑️ Đã xóa lịch sử');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init
+renderHistory();
+updateKeyStatus();
+if (!getApiKey()) {
+  // Auto-open key modal on first use
+  setTimeout(() => openKeyModal(), 600);
+}
+</script>
+</body>
+</html>
