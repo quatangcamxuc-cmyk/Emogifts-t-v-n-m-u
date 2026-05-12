@@ -367,22 +367,43 @@ header{background:var(--navy);padding:0 28px;display:flex;align-items:center;jus
         <div class="field"><label>Sản phẩm cần tìm giá</label><input type="text" id="searchQ" placeholder="VD: binh giu nhiet, coc su, balo laptop (dùng từ khóa ngắn)"></div>
         <div class="field-row">
           <div class="field">
-            <label>Khoảng giá mục tiêu</label>
+            <label>Khoảng giá mục tiêu (VNĐ)</label>
             <select id="priceRange">
-              <option>Tất cả mức giá</option>
-              <option>Dưới 50.000đ</option>
-              <option>50k – 200k</option>
-              <option>200k – 500k</option>
-              <option>Trên 500k</option>
+              <option value="0-999999999">Tất cả mức giá</option>
+              <option value="0-5000">Dưới 5.000đ</option>
+              <option value="5000-10000">5.000 – 10.000đ</option>
+              <option value="10000-20000">10.000 – 20.000đ</option>
+              <option value="20000-30000">20.000 – 30.000đ</option>
+              <option value="30000-50000">30.000 – 50.000đ</option>
+              <option value="50000-100000">50.000 – 100.000đ</option>
+              <option value="100000-150000">100.000 – 150.000đ</option>
+              <option value="150000-200000">150.000 – 200.000đ</option>
+              <option value="200000-250000">200.000 – 250.000đ</option>
+              <option value="250000-300000">250.000 – 300.000đ</option>
+              <option value="300000-350000">300.000 – 350.000đ</option>
+              <option value="350000-400000">350.000 – 400.000đ</option>
+              <option value="400000-450000">400.000 – 450.000đ</option>
+              <option value="450000-500000">450.000 – 500.000đ</option>
+              <option value="500000-600000">500.000 – 600.000đ</option>
+              <option value="600000-700000">600.000 – 700.000đ</option>
+              <option value="700000-800000">700.000 – 800.000đ</option>
+              <option value="800000-900000">800.000 – 900.000đ</option>
+              <option value="900000-1000000">900.000 – 1.000.000đ</option>
+              <option value="1000000-1200000">1.000.000 – 1.200.000đ</option>
+              <option value="1200000-1500000">1.200.000 – 1.500.000đ</option>
+              <option value="1500000-2000000">1.500.000 – 2.000.000đ</option>
+              <option value="2000000-999999999">Trên 2.000.000đ</option>
             </select>
           </div>
           <div class="field">
             <label>Số lượng nhập</label>
             <select id="moq">
-              <option>Lẻ / Mẫu (1-10)</option>
-              <option>Nhỏ (10-100)</option>
-              <option selected>Vừa (100-1.000)</option>
-              <option>Lớn (1.000+)</option>
+              <option value="0-100">Dưới 100 pcs</option>
+              <option value="100-300">100 – 300 pcs</option>
+              <option value="300-500" selected>300 – 500 pcs</option>
+              <option value="500-1000">500 – 1.000 pcs</option>
+              <option value="1000-3000">1.000 – 3.000 pcs</option>
+              <option value="3000-999999">Trên 3.000 pcs</option>
             </select>
           </div>
         </div>
@@ -660,6 +681,20 @@ async function searchMarket(){
         apiError=`Raw: ${JSON.stringify(d).substring(0,300)}`;
       }
       last1688Data=items1688;
+
+      // Lọc theo khoảng giá đã chọn (giá VNĐ = CNY × 3500)
+      const priceVal = document.getElementById('priceRange').value;
+      if(priceVal && priceVal !== '0-999999999'){
+        const [minVND, maxVND] = priceVal.split('-').map(Number);
+        const before = items1688.length;
+        items1688 = items1688.filter(it => {
+          const vnd = it.price * 3500;
+          return vnd >= minVND && vnd <= maxVND;
+        });
+        if(items1688.length === 0 && before > 0){
+          apiError = `Không có sản phẩm nào trong khoảng giá đã chọn. Tìm thấy ${before} sp nhưng giá nằm ngoài khoảng lọc — thử chọn khoảng rộng hơn.`;
+        }
+      }
     }catch(e){ apiError=e.message; }
   }
 
