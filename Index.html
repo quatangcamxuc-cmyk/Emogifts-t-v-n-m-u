@@ -601,10 +601,26 @@ async function searchMarket(){
     try{
       const r=await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
       const d=await r.json();
-      console.log('1688 raw data:', JSON.stringify(d).substring(0,500));
-      items1688 = d?.data?.itemList || d?.itemList || d?.result || d?.data || [];
-      if(!Array.isArray(items1688)) items1688=[];
-      last1688Data=items1688;
+      console.log('1688 raw:', JSON.stringify(d).substring(0,300));
+
+      // Parse đúng cấu trúc thực tế của API
+      if(d?.ErrorCode==='Ok' || d?.errorCode==='Ok'){
+        const raw = d?.Result?.Items?.Items || d?.result?.Items?.Items || [];
+        items1688 = raw.map(item => {
+          const c = item.Content || item.content || item;
+          return {
+            title:    c.Title || c.title || c.subject || 'Sản phẩm',
+            price:    c.Price?.OriginalPrice || c.price?.OriginalPrice || c.priceInfo?.price || c.Price || '?',
+            imageUrl: c.MainPictureUrl || c.mainPictureUrl || c.picUrl || c.imageUrl || '',
+            link:     c.ExternalItemUrl || c.TaobaoItemUrl || c.externalItemUrl || `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
+            moq:      c.MasterQuantity || c.masterQuantity || c.minOrderQuantity || 1,
+            vendor:   c.VendorDisplayName || c.vendorDisplayName || '',
+            offerId:  c.Id || c.id || ''
+          };
+        }).filter(it => it.price !== '?' && it.price > 0);
+      }
+      last1688Data = items1688;
+      if(items1688.length===0 && d?.ErrorCode!=='Ok') apiError = d?.message || d?.ErrorDescription || 'API trả về không có sản phẩm';
     }catch(e){ apiError=e.message; }
   }
 
