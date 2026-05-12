@@ -841,38 +841,67 @@ function showPPTXStatus(ok, msg){
 //  CLAUDE API CALLS
 // ══════════════════════════════════════
 async function callClaude(prompt){
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:prompt}]})
-  });
-  if(!res.ok){
-    const e=await res.json().catch(()=>({}));
-    if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
-    throw new Error(e?.error?.message||`HTTP ${res.status}`);
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * attempt));
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+      });
+      if(!res.ok){
+        const e=await res.json().catch(()=>({}));
+        if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
+        if(res.status===529||e?.error?.type==='overloaded_error'){lastErr=new Error('overloaded');continue;}
+        throw new Error(e?.error?.message||`HTTP ${res.status}`);
+      }
+      const d=await res.json();
+      if(d?.error?.type==='overloaded_error'){lastErr=new Error('overloaded');continue;}
+      return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'';
+    } catch(e) {
+      lastErr=e;
+      if(!e.message.includes('overload'))throw e;
+    }
   }
-  const d=await res.json();
-  return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'';
+  throw lastErr||new Error('API quá tải, thử lại sau 30 giây');
 }
 
 async function callClaudeSearch(prompt){
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',
-      max_tokens:3000,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      messages:[{role:'user',content:prompt}]
-    })
-  });
-  if(!res.ok){
-    const e=await res.json().catch(()=>({}));
-    if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
-    throw new Error(e?.error?.message||`HTTP ${res.status}`);
+  const models = ['claude-haiku-4-5-20251001', 'claude-haiku-4-5-20251001'];
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * attempt));
+      const res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({
+          model: models[Math.min(attempt, models.length-1)],
+          max_tokens:3000,
+          tools:[{type:'web_search_20250305',name:'web_search'}],
+          messages:[{role:'user',content:prompt}]
+        })
+      });
+      if(res.status === 529 || res.status === 503) {
+        lastErr = new Error('API đang quá tải, đang thử lại...');
+        continue;
+      }
+      if(!res.ok){
+        const e=await res.json().catch(()=>({}));
+        if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
+        if(e?.error?.type === 'overloaded_error') { lastErr = new Error('overloaded'); continue; }
+        throw new Error(e?.error?.message||`HTTP ${res.status}`);
+      }
+      const d=await res.json();
+      if(d?.error?.type === 'overloaded_error') { lastErr = new Error('overloaded'); continue; }
+      return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'';
+    } catch(e) {
+      lastErr = e;
+      if (!e.message.includes('overload') && !e.message.includes('529') && !e.message.includes('503')) throw e;
+    }
   }
-  const d=await res.json();
-  return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'Không có kết quả từ web search';
+  throw lastErr || new Error('API quá tải, vui lòng thử lại sau 30 giây');
 }
 
 // ══════════════════════════════════════
