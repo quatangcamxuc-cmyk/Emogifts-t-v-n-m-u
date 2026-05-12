@@ -656,13 +656,16 @@ async function searchMarket(){
           const price=c?.Price?.OriginalPrice||c?.price?.OriginalPrice
             ||c?.priceInfo?.price||c?.OriginalPrice||c?.price||c?.Price||0;
 
-          // Build correct offer link from ID
-          const rawId = c?.Id||c?.id||c?.offerId||'';
-          // ID format: "abb-999065164414" → extract numeric part
-          const offerId = rawId.replace(/^[a-z]+-/i,'').replace(/\D/g,'');
-          const link = offerId
-            ? `https://detail.1688.com/offer/${offerId}.html`
-            : (c?.ExternalItemUrl||c?.TaobaoItemUrl||`https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`);
+          // Dùng trực tiếp link từ API — chính xác nhất
+          const link = c?.ExternalItemUrl || c?.TaobaoItemUrl || c?.externalItemUrl || c?.taobaoItemUrl
+            || (()=>{
+              // Fallback: trích offer ID từ ExternalItemUrl nếu có
+              const urlStr = c?.ExternalItemUrl || c?.TaobaoItemUrl || '';
+              const match = urlStr.match(/offer\/(\d+)\.html/);
+              return match
+                ? `https://detail.1688.com/offer/${match[1]}.html`
+                : `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`;
+            })();
 
           // Real MOQ — MinOrderQuantity, not MasterQuantity (which is stock/sold)
           const moq = c?.MinOrderQuantity||c?.minOrderQuantity||c?.MinOrder||c?.minOrder||1;
