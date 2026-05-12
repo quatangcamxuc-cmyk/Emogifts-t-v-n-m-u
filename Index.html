@@ -602,45 +602,52 @@ async function searchMarket(){
       const r=await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
       const d=await r.json();
 
-      if(d?.ErrorCode==='Ok' || d?.SubErrorCode!==undefined){
-        // Thử tất cả các path có thể có
-        let rawItems = d?.Result?.Items?.Items
-          || d?.Result?.Items
-          || d?.Result?.result?.Items
-          || d?.result?.Items?.Items
-          || d?.Items?.Items
-          || d?.data
-          || null;
-
-        // Nếu là object thay vì array, chuyển thành array
-        if(rawItems && !Array.isArray(rawItems)){
-          rawItems = Object.values(rawItems);
-        }
-        const raw = Array.isArray(rawItems) ? rawItems : [];
-
-        items1688 = raw.map(item => {
-          const c = item?.Content || item?.content || item;
-          const price = c?.Price?.OriginalPrice
-            || c?.price?.OriginalPrice
-            || c?.priceInfo?.price
-            || c?.OriginalPrice
-            || c?.price
-            || 0;
-          return {
-            title:    c?.Title || c?.title || c?.subject || c?.name || 'Sản phẩm',
-            price:    parseFloat(price) || 0,
-            imageUrl: c?.MainPictureUrl || c?.mainPictureUrl || c?.picUrl
-                      || c?.Pictures?.[0]?.Url || c?.imageUrl || '',
-            link:     c?.ExternalItemUrl || c?.TaobaoItemUrl
-                      || `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
-            moq:      c?.MasterQuantity || c?.masterQuantity || c?.minOrderQuantity || 1,
-            vendor:   c?.VendorDisplayName || c?.vendorDisplayName || ''
-          };
-        }).filter(it => it.price > 0);
-      } else {
-        apiError = d?.ErrorDescription || d?.message || JSON.stringify(d).substring(0,100);
+      // Tìm array sản phẩm bằng cách thử từng path
+      let found=null;
+      const tryPaths=[
+        d?.Result?.Items?.Items,
+        d?.Result?.Items,
+        d?.result?.Items?.Items,
+        d?.result?.Items,
+        d?.Items?.Items,
+        d?.Items,
+        d?.data?.itemList,
+        d?.data,
+        d?.items
+      ];
+      for(const p of tryPaths){
+        if(Array.isArray(p) && p.length>0){ found=p; break; }
       }
-      last1688Data = items1688;
+      // Nếu vẫn không ra, thử Object.values ở mỗi level
+      if(!found){
+        for(const p of tryPaths){
+          if(p && typeof p==='object' && !Array.isArray(p)){
+            const vals=Object.values(p);
+            if(Array.isArray(vals[0]) && vals[0].length>0){ found=vals[0]; break; }
+            if(vals.length>0 && vals[0]?.Content){ found=vals; break; }
+          }
+        }
+      }
+
+      if(found && found.length>0){
+        items1688=found.map(item=>{
+          const c=item?.Content||item?.content||item;
+          const price=c?.Price?.OriginalPrice||c?.price?.OriginalPrice
+            ||c?.priceInfo?.price||c?.OriginalPrice||c?.price||c?.Price||0;
+          return{
+            title:   (c?.Title||c?.title||c?.subject||c?.name||'SP').toString().substring(0,80),
+            price:   parseFloat(price)||0,
+            imageUrl:c?.MainPictureUrl||c?.mainPictureUrl||c?.picUrl||c?.Pictures?.[0]?.Url||'',
+            link:    c?.ExternalItemUrl||c?.TaobaoItemUrl||`https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
+            moq:     c?.MasterQuantity||c?.masterQuantity||c?.minOrderQuantity||1,
+            vendor:  c?.VendorDisplayName||c?.vendorDisplayName||''
+          };
+        }).filter(it=>it.price>0);
+      } else {
+        // Hiện raw structure để debug
+        apiError=`Cấu trúc data: ${JSON.stringify(Object.keys(d||{}))}, Result keys: ${JSON.stringify(Object.keys(d?.Result||{}))}`;
+      }
+      last1688Data=items1688;
     }catch(e){ apiError=e.message; }
   }
 
