@@ -601,26 +601,46 @@ async function searchMarket(){
     try{
       const r=await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
       const d=await r.json();
-      console.log('1688 raw:', JSON.stringify(d).substring(0,300));
 
-      // Parse đúng cấu trúc thực tế của API
-      if(d?.ErrorCode==='Ok' || d?.errorCode==='Ok'){
-        const raw = d?.Result?.Items?.Items || d?.result?.Items?.Items || [];
+      if(d?.ErrorCode==='Ok' || d?.SubErrorCode!==undefined){
+        // Thử tất cả các path có thể có
+        let rawItems = d?.Result?.Items?.Items
+          || d?.Result?.Items
+          || d?.Result?.result?.Items
+          || d?.result?.Items?.Items
+          || d?.Items?.Items
+          || d?.data
+          || null;
+
+        // Nếu là object thay vì array, chuyển thành array
+        if(rawItems && !Array.isArray(rawItems)){
+          rawItems = Object.values(rawItems);
+        }
+        const raw = Array.isArray(rawItems) ? rawItems : [];
+
         items1688 = raw.map(item => {
-          const c = item.Content || item.content || item;
+          const c = item?.Content || item?.content || item;
+          const price = c?.Price?.OriginalPrice
+            || c?.price?.OriginalPrice
+            || c?.priceInfo?.price
+            || c?.OriginalPrice
+            || c?.price
+            || 0;
           return {
-            title:    c.Title || c.title || c.subject || 'Sản phẩm',
-            price:    c.Price?.OriginalPrice || c.price?.OriginalPrice || c.priceInfo?.price || c.Price || '?',
-            imageUrl: c.MainPictureUrl || c.mainPictureUrl || c.picUrl || c.imageUrl || '',
-            link:     c.ExternalItemUrl || c.TaobaoItemUrl || c.externalItemUrl || `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
-            moq:      c.MasterQuantity || c.masterQuantity || c.minOrderQuantity || 1,
-            vendor:   c.VendorDisplayName || c.vendorDisplayName || '',
-            offerId:  c.Id || c.id || ''
+            title:    c?.Title || c?.title || c?.subject || c?.name || 'Sản phẩm',
+            price:    parseFloat(price) || 0,
+            imageUrl: c?.MainPictureUrl || c?.mainPictureUrl || c?.picUrl
+                      || c?.Pictures?.[0]?.Url || c?.imageUrl || '',
+            link:     c?.ExternalItemUrl || c?.TaobaoItemUrl
+                      || `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
+            moq:      c?.MasterQuantity || c?.masterQuantity || c?.minOrderQuantity || 1,
+            vendor:   c?.VendorDisplayName || c?.vendorDisplayName || ''
           };
-        }).filter(it => it.price !== '?' && it.price > 0);
+        }).filter(it => it.price > 0);
+      } else {
+        apiError = d?.ErrorDescription || d?.message || JSON.stringify(d).substring(0,100);
       }
       last1688Data = items1688;
-      if(items1688.length===0 && d?.ErrorCode!=='Ok') apiError = d?.message || d?.ErrorDescription || 'API trả về không có sản phẩm';
     }catch(e){ apiError=e.message; }
   }
 
@@ -675,32 +695,24 @@ async function searchMarket(){
 
   // BƯỚC 3: Claude chỉ phân tích + tìm web VN (không tìm 1688 nữa)
   const dataStr = items1688.length>0
-    ? items1688.slice(0,5).map(it=>`- ${it.subject||it.title||'SP'}: ¥${it.priceInfo?.price||it.price||'?'} CNY, MOQ ${it.minOrderQuantity||1}`).join('\n')
-    : 'Chưa có data 1688';
+    ? items1688.slice(0,5).map(it=>`- ${it.title.substring(0,50)}: ¥${it.price} CNY (~${Math.round(it.price*3500).toLocaleString('vi-VN')}đ), MOQ ${it.moq}`).join('\n')
+    : '';
 
-  const prompt=`Bạn là chuyên gia quà tặng doanh nghiệp Emogifts.
-
-Sản phẩm: "${q}" | ${price} | ${moq}${note?' | '+note:''}
-
-DATA 1688 ĐÃ CÓ:
-${dataStr}
-
-NHIỆM VỤ (CHỈ làm 2 việc này, KHÔNG cần tìm 1688 nữa):
-1. Dùng web_search tìm giá đối thủ Việt Nam: "${q} quà tặng doanh nghiệp giá sỉ"
-2. Phân tích chiến lược kinh doanh cho Emogifts dựa trên data trên
-
-Trả lời ngắn gọn theo format:
+  const prompt=`Tìm giá đối thủ Việt Nam bán "${q}" và đưa gợi ý kinh doanh cho Emogifts.
+${dataStr?`\nGiá 1688 đã có:\n${dataStr}`:''}
+Dùng web_search: "${q} quà tặng doanh nghiệp giá sỉ"
+Trả lời NGẮN GỌN, không giải thích giới hạn, không từ chối:
 
 ### 🌐 Giá đối thủ Việt Nam
-| Đơn vị | Sản phẩm | Giá lẻ | Giá sỉ | Link |
+| Đơn vị | Sản phẩm | Giá lẻ | Giá sỉ |
+|---|---|---|---|
 [3-5 dòng từ web search]
 
-### 💡 Chiến lược Emogifts
-**Giá nhập tốt nhất:** [từ 1688 data ở trên]
-**Giá bán đề xuất:** [margin 40-50%]
-**Lợi nhuận 500sp:** [tính cụ thể]
-**Lợi thế so đối thủ VN:** [2-3 điểm]
-**Hành động tuần này:** [3 bước cụ thể]`;
+### 💡 Gợi ý Emogifts
+- Giá nhập tốt nhất: [cụ thể]
+- Giá bán đề xuất: [cụ thể]
+- Lợi nhuận/sp: [cụ thể]
+- Hành động tuần này: [2 bước]`;
 
   try{
     const txt=await callClaudeSearch(prompt);
