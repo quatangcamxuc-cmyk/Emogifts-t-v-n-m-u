@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emogifts — Tư Vấn & Nghiên Cứu Thị Trường</title>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundled.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundled.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -634,12 +634,24 @@ async function searchMarket(){
           const c=item?.Content||item?.content||item;
           const price=c?.Price?.OriginalPrice||c?.price?.OriginalPrice
             ||c?.priceInfo?.price||c?.OriginalPrice||c?.price||c?.Price||0;
+
+          // Build correct offer link from ID
+          const rawId = c?.Id||c?.id||c?.offerId||'';
+          // ID format: "abb-999065164414" → extract numeric part
+          const offerId = rawId.replace(/^[a-z]+-/i,'').replace(/\D/g,'');
+          const link = offerId
+            ? `https://detail.1688.com/offer/${offerId}.html`
+            : (c?.ExternalItemUrl||c?.TaobaoItemUrl||`https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`);
+
+          // Real MOQ — MinOrderQuantity, not MasterQuantity (which is stock/sold)
+          const moq = c?.MinOrderQuantity||c?.minOrderQuantity||c?.MinOrder||c?.minOrder||1;
+
           return{
             title:   (c?.Title||c?.title||c?.subject||c?.name||'SP').toString().substring(0,80),
             price:   parseFloat(price)||0,
             imageUrl:c?.MainPictureUrl||c?.mainPictureUrl||c?.picUrl||c?.Pictures?.[0]?.Url||'',
-            link:    c?.ExternalItemUrl||c?.TaobaoItemUrl||`https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`,
-            moq:     c?.MasterQuantity||c?.masterQuantity||c?.minOrderQuantity||1,
+            link,
+            moq,
             vendor:  c?.VendorDisplayName||c?.vendorDisplayName||''
           };
         }).filter(it=>it.price>0);
