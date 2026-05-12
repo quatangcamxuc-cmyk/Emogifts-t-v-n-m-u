@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emogifts — Tư Vấn & Nghiên Cứu Thị Trường</title>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundled.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F1E3C;--navy2:#1a2f55;--gold:#C9A84C;--gold2:#e8c97a;--cream:#FAF7F2;--cream2:#F2EDE3;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8888aa;--border:rgba(201,168,76,.2);--white:#fff;--green:#2d7a4f;--red:#c0392b;--radius:12px;--shadow:0 8px 32px rgba(15,30,60,.12);--shadow-sm:0 2px 12px rgba(15,30,60,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px}
+
+/* HEADER */
+header{background:var(--navy);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(201,168,76,.25)}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:#fff;letter-spacing:.02em}
+.logo-tag{font-size:11px;color:var(--gold);letter-spacing:.09em;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:10px}
+.key-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s}
+.key-set{background:rgba(45,122,79,.18);color:#4caf82}
+.key-unset{background:rgba(192,57,43,.18);color:#e57373}
+
+/* TABS */
+.tabs-bar{background:var(--navy2);display:flex;padding:0 28px;border-bottom:2px solid rgba(201,168,76,.2)}
+.tab-btn{padding:13px 22px;font-size:14px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab-btn.active{color:var(--gold2);border-bottom-color:var(--gold)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.8)}
+
+/* LAYOUT */
+.container{max-width:1120px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.tab-section{display:none}.tab-section.active{display:block}
+
+/* PANEL */
+.panel{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+.panel-head{background:var(--navy);padding:18px 22px;border-bottom:2px solid var(--gold)}
+.panel-title{font-family:'Playfair Display',serif;font-size:16px;color:#fff;font-weight:500}
+.panel-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px}
+.panel-body{padding:18px 22px}
+
+/* FORM */
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.preset{padding:5px 11px;border:1px solid var(--border);border-radius:20px;background:var(--cream);color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;font-weight:500}
+.preset:hover{background:var(--navy);color:var(--gold2);border-color:var(--navy)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:.03em}
+.field select,.field input,.field textarea{width:100%;padding:9px 13px;border:1.5px solid #e8e4dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--cream);transition:border-color .15s,box-shadow .15s;outline:none;appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer}
+.field select:focus,.field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+.field textarea{resize:vertical;min-height:66px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.divider{height:1px;background:var(--cream2);margin:16px 0}
+
+/* BUTTONS */
+.btn-main{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-main:hover{background:var(--navy2);transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{padding:7px 15px;border-radius:8px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;border:none}
+.btn-copy{background:rgba(255,255,255,.1);color:var(--cream);border:1px solid rgba(255,255,255,.2)!important}
+.btn-copy:hover{background:rgba(255,255,255,.2)}
+.btn-pptx{background:var(--gold);color:var(--navy)}
+.btn-pptx:hover{background:var(--gold2)}
+.btn-pptx:disabled{opacity:.5;cursor:not-allowed}
+
+/* RESULT PANEL */
+.result-panel{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;min-height:480px;display:flex;flex-direction:column}
+.result-head{background:var(--navy);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold)}
+.result-title{font-family:'Playfair Display',serif;font-size:15px;color:#fff;font-weight:500}
+.result-meta{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.result-acts{display:flex;gap:7px}
+.result-body{flex:1;padding:24px;overflow-y:auto}
+
+/* EMPTY / LOADING */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;text-align:center;color:var(--text3)}
+.empty-icon{font-size:48px;margin-bottom:14px;opacity:.5}
+.empty-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--text2);margin-bottom:7px}
+.empty-sub{font-size:13px;line-height:1.6;max-width:260px}
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:18px}
+.loading-ring{width:44px;height:44px;border:3px solid var(--cream2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:14px;color:var(--text2);text-align:center}
+.loading-steps{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--text3)}
+.lstep{display:flex;align-items:center;gap:8px}
+.ldot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 1.2s ease-in-out infinite}
+.lstep:nth-child(2) .ldot{animation-delay:.4s}.lstep:nth-child(3) .ldot{animation-delay:.8s}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* AI RESULT */
+.ai-result{line-height:1.75}
+.ai-result h1{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy);margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--gold)}
+.ai-result h2{font-family:'Playfair Display',serif;font-size:15px;color:var(--navy2);margin:20px 0 10px}
+.ai-result h3{font-size:13px;font-weight:600;color:var(--navy);margin:14px 0 7px}
+.ai-result p{margin-bottom:10px;color:var(--text);font-size:14px}
+.ai-result strong{color:var(--navy);font-weight:600}
+.ai-result table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.ai-result th{background:var(--navy);color:var(--gold2);padding:9px 13px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.04em}
+.ai-result td{padding:9px 13px;border-bottom:1px solid var(--cream2);vertical-align:top;color:var(--text)}
+.ai-result tr:last-child td{border-bottom:none}
+.ai-result tr:nth-child(even) td{background:#fafaf8}
+.ai-result tr:hover td{background:#f5f2ea}
+.ai-result ul,.ai-result ol{margin:7px 0 10px 18px;font-size:14px}
+.ai-result li{margin-bottom:4px;color:var(--text)}
+.ai-result blockquote{border-left:3px solid var(--gold);padding:9px 14px;background:var(--cream);border-radius:0 7px 7px 0;margin:10px 0;font-size:14px;color:var(--text2)}
+
+/* HISTORY */
+.hist-section{margin-top:16px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+.hist-head{padding:12px 18px;background:var(--cream2);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.hist-clear{font-size:11px;color:var(--text3);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif}
+.hist-clear:hover{color:var(--red)}
+.hist-list{max-height:160px;overflow-y:auto}
+.hist-item{padding:9px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid var(--cream2);transition:background .1s}
+.hist-item:last-child{border-bottom:none}
+.hist-item:hover{background:var(--cream)}
+.hdot{width:7px;height:7px;background:var(--gold);border-radius:50%;flex-shrink:0}
+.hinfo{flex:1;min-width:0}
+.hname{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.htime{font-size:11px;color:var(--text3);margin-top:1px}
+.hempty{padding:14px 18px;font-size:12px;color:var(--text3);text-align:center}
+
+/* MARKET RESEARCH TAB */
+.mkt-container{max-width:1120px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:320px 1fr;gap:22px;align-items:start}
+.source-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.src-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.src-badge.active{color:#fff}
+.src-shopee{border-color:#ee4d2d;color:#ee4d2d}.src-shopee.active{background:#ee4d2d}
+.src-1688{border-color:#e05c00;color:#e05c00}.src-1688.active{background:#e05c00}
+.src-taobao{border-color:#e21823;color:#e21823}.src-taobao.active{background:#e21823}
+.src-web{border-color:var(--navy);color:var(--navy)}.src-web.active{background:var(--navy)}
+
+/* PRODUCT CARDS */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:14px}
+.product-card{background:var(--white);border:1.5px solid var(--cream2);border-radius:10px;overflow:hidden;transition:all .2s;cursor:pointer}
+.product-card:hover{border-color:var(--gold);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.product-card.selected{border-color:var(--gold);background:#fffbf0}
+.card-img{width:100%;height:140px;object-fit:cover;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--text3)}
+.card-body{padding:12px}
+.card-source{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.src-shopee-text{color:#ee4d2d}.src-1688-text{color:#e05c00}.src-taobao-text{color:#e21823}.src-web-text{color:var(--navy)}
+.card-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-price{font-size:15px;font-weight:700;color:var(--navy)}
+.card-price-orig{font-size:11px;color:var(--text3);text-decoration:line-through;margin-left:5px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--cream2)}
+.card-link{font-size:11px;color:var(--gold);text-decoration:none;font-weight:600}
+.card-check{width:18px;height:18px;border:2px solid var(--text3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .15s}
+.product-card.selected .card-check{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+
+/* PPTX STATUS */
+.pptx-status{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+.pptx-ok{background:#e8f5e9;color:var(--green);border:1px solid #a5d6a7}
+.pptx-err{background:#fdecea;color:var(--red);border:1px solid #ffcdd2}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,30,60,.72);backdrop-filter:blur(4px);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:var(--white);border-radius:16px;width:100%;max-width:430px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:slideUp .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-h{background:var(--navy);padding:18px 22px;border-bottom:2px solid var(--gold)}
+.modal-h h3{font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-weight:500}
+.modal-h p{color:rgba(255,255,255,.5);font-size:12px;margin-top:3px}
+.modal-b{padding:22px}
+.modal-b label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px}
+.modal-b input{width:100%;padding:10px 13px;border:1.5px solid #e8e4dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--cream);outline:none;letter-spacing:.04em}
+.modal-b input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+.modal-hint{margin-top:10px;background:#fffbf0;border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--text2);line-height:1.6}
+.modal-hint a{color:var(--gold);text-decoration:none;font-weight:600}
+.modal-acts{display:flex;gap:9px;margin-top:14px}
+.btn-modal-save{flex:1;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.btn-modal-save:hover{opacity:.85}
+.btn-modal-cancel{padding:10px 16px;background:var(--cream);color:var(--text2);border:1.5px solid #e8e4dc;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:500;border-left:3px solid var(--gold);box-shadow:var(--shadow);transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:1000}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* WATERMARK */
+.watermark{text-align:center;padding:16px;font-size:11px;color:var(--text3);border-top:1px solid var(--cream2)}
+.watermark a{color:var(--gold);text-decoration:none}
+
+@media(max-width:768px){
+  .container,.mkt-container{grid-template-columns:1fr;padding:14px}
+  .field-row{grid-template-columns:1fr}
+  header{padding:0 14px}
+  .tabs-bar{padding:0 14px}
+}
+@media print{
+  header,.tabs-bar,.panel,.hist-section,.result-acts,.watermark,button{display:none!important}
+  .container{grid-template-columns:1fr}
+  .result-panel{box-shadow:none;min-height:auto}
+  .result-body{padding:0}
+  body{background:white}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎁</div>
+    <div>
+      <div class="logo-name">Emogifts</div>
+      <div class="logo-tag">Quà Tặng Cảm Xúc</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="key-btn key-unset" id="keyBtn" onclick="openModal()">🔑 Chưa có API key</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('tuvan',this)">🎯 Tư Vấn Khách Hàng</button>
+  <button class="tab-btn" onclick="switchTab('market',this)">🔍 Nghiên Cứu Thị Trường</button>
+</div>
+
+<!-- ═══════════════ TAB 1: TƯ VẤN ═══════════════ -->
+<div id="tab-tuvan" class="tab-section active">
+<div class="container">
+
+  <!-- LEFT FORM -->
+  <div>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Thông tin khách hàng</div>
+        <div class="panel-sub">Điền đầy đủ để AI tư vấn chính xác</div>
+      </div>
+      <div class="panel-body">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:9px">Kịch bản nhanh</div>
+        <div class="presets">
+          <button class="preset" onclick="fillP('bank')">🏦 Ngân hàng</button>
+          <button class="preset" onclick="fillP('event')">🏆 Hội nghị</button>
+          <button class="preset" onclick="fillP('tet')">🧧 Quà Tết</button>
+          <button class="preset" onclick="fillP('edu')">🎓 Trường học</button>
+          <button class="preset" onclick="fillP('military')">⭐ Quân đội</button>
+          <button class="preset" onclick="fillP('health')">🏥 Y tế</button>
+        </div>
+        <div class="divider"></div>
+        <div class="field"><label>Tên khách hàng / Công ty</label><input type="text" id="cname" placeholder="VD: Ngân hàng VPBank..."></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Loại khách hàng</label>
+            <select id="ctype">
+              <option>Ngân hàng / Tài chính</option>
+              <option>Nhà nước / Quân đội</option>
+              <option>Trường học / Giáo dục</option>
+              <option>Y tế / Bệnh viện</option>
+              <option>Doanh nghiệp tư nhân</option>
+              <option>Tổ chức sự kiện</option>
+              <option>Bán lẻ / FMCG</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Dịp tặng</label>
+            <select id="occ">
+              <option>Tri ân khách hàng</option>
+              <option>Hội nghị / Sự kiện</option>
+              <option>Khen thưởng nhân viên</option>
+              <option>Kỷ niệm thành lập</option>
+              <option>Tết Nguyên Đán</option>
+              <option>Lễ tốt nghiệp</option>
+              <option>Khai trương</option>
+              <option>Hội thao / Thể dục</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Ngân sách / sản phẩm</label>
+            <select id="budget">
+              <option>Dưới 50.000đ</option>
+              <option selected>50k – 150.000đ</option>
+              <option>150k – 300.000đ</option>
+              <option>300k – 600.000đ</option>
+              <option>600k – 1 triệu</option>
+              <option>Trên 1 triệu</option>
+              <option>Combo nhiều mức</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Số lượng đặt</label>
+            <select id="qty">
+              <option>Nhỏ lẻ (1–50 sp)</option>
+              <option selected>Vừa (50–500 sp)</option>
+              <option>Lớn (500–2k sp)</option>
+              <option>Cực lớn (2k+ sp)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Số sản phẩm gợi ý</label>
+            <select id="nump"><option>5</option><option selected>8</option><option>10</option><option>12</option></select>
+          </div>
+          <div class="field">
+            <label>Định dạng kết quả</label>
+            <select id="fmt">
+              <option value="table">📋 Bảng chi tiết</option>
+              <option value="proposal">📦 Đề xuất 3 nhóm</option>
+              <option value="email">✉️ Email gửi KH</option>
+              <option value="quote">💰 Báo giá sơ bộ</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Yêu cầu đặc biệt</label><textarea id="notes" placeholder="In logo, chất liệu, thời hạn giao, phong cách..."></textarea></div>
+        <button class="btn-main" id="genBtn" onclick="generate()">
+          <span>✨</span><span id="genTxt">Tạo bảng tư vấn</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="hist-section">
+      <div class="hist-head"><span>📂 Lịch sử</span><button class="hist-clear" onclick="clearHist()">Xóa</button></div>
+      <div class="hist-list" id="histList"><div class="hempty">Chưa có lịch sử</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT RESULT -->
+  <div>
+    <div class="result-panel">
+      <div class="result-head">
+        <div>
+          <div class="result-title" id="rTitle">Kết quả tư vấn</div>
+          <div class="result-meta" id="rMeta">Chọn kịch bản hoặc điền thông tin → Tạo bảng tư vấn</div>
+        </div>
+        <div class="result-acts">
+          <button class="btn-sm btn-copy" id="copyBtn" onclick="copyResult()" style="display:none">📋 Copy</button>
+          <button class="btn-sm btn-pptx" id="pptxBtn" onclick="exportPPTX()" style="display:none">📊 Xuất PowerPoint</button>
+        </div>
+      </div>
+      <div class="result-body" id="rBody">
+        <div class="empty-state">
+          <div class="empty-icon">🎁</div>
+          <div class="empty-title">Sẵn sàng tư vấn</div>
+          <div class="empty-sub">Chọn kịch bản nhanh hoặc nhập thông tin KH → AI gợi ý sản phẩm phù hợp</div>
+        </div>
+      </div>
+      <div class="pptx-status" id="pptxStatus"></div>
+      <div class="watermark">Emogifts | <a href="https://quatangcamxuc.bitrix24.shop">quatangcamxuc.bitrix24.shop</a> | 0912 068 999</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════ TAB 2: NGHIÊN CỨU THỊ TRƯỜNG ═══════════════ -->
+<div id="tab-market" class="tab-section">
+<div class="mkt-container">
+
+  <!-- LEFT SEARCH FORM -->
+  <div>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">🔍 Nghiên cứu thị trường</div>
+        <div class="panel-sub">Tìm giá & đối thủ từ nhiều nguồn</div>
+      </div>
+      <div class="panel-body">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:9px">Nguồn tìm kiếm</div>
+        <div class="source-badges">
+          <button class="src-badge src-shopee active" id="src-shopee" onclick="toggleSrc(this)">🛒 Shopee VN</button>
+          <button class="src-badge src-1688 active" id="src-1688" onclick="toggleSrc(this)">🏭 1688.com</button>
+          <button class="src-badge src-taobao active" id="src-taobao" onclick="toggleSrc(this)">🐰 Taobao</button>
+          <button class="src-badge src-web active" id="src-web" onclick="toggleSrc(this)">🌐 Web quà tặng VN</button>
+        </div>
+        <div class="divider"></div>
+        <div class="field"><label>Sản phẩm cần tìm giá</label><input type="text" id="searchQ" placeholder="VD: bình giữ nhiệt inox, cốc sứ in logo, balo laptop..."></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Khoảng giá mục tiêu</label>
+            <select id="priceRange">
+              <option>Tất cả mức giá</option>
+              <option>Dưới 50.000đ</option>
+              <option>50k – 200k</option>
+              <option>200k – 500k</option>
+              <option>Trên 500k</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Số lượng nhập</label>
+            <select id="moq">
+              <option>Lẻ / Mẫu (1-10)</option>
+              <option>Nhỏ (10-100)</option>
+              <option selected>Vừa (100-1.000)</option>
+              <option>Lớn (1.000+)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Yêu cầu thêm</label><textarea id="searchNote" placeholder="In logo, chất liệu cụ thể, tiêu chuẩn, màu sắc..."></textarea></div>
+        <button class="btn-main" id="mktBtn" onclick="searchMarket()">
+          <span>🔍</span><span id="mktTxt">Tìm kiếm & phân tích giá</span>
+        </button>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.6">
+          ⚡ AI sẽ tìm kiếm thực trên các nền tảng, so sánh giá và đề xuất chiến lược nhập hàng
+        </div>
+      </div>
+    </div>
+
+    <!-- SELECTED PRODUCTS -->
+    <div class="hist-section" id="selectedPanel" style="display:none">
+      <div class="hist-head">
+        <span>✓ Sản phẩm đã chọn (<span id="selectedCount">0</span>)</span>
+        <button class="btn-sm btn-pptx" onclick="exportMarketPPTX()" style="font-size:11px;padding:4px 10px">📊 Xuất PPTX</button>
+      </div>
+      <div id="selectedList" style="padding:10px 16px;max-height:200px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT MARKET RESULT -->
+  <div>
+    <div class="result-panel">
+      <div class="result-head">
+        <div>
+          <div class="result-title" id="mktTitle">Kết quả thị trường</div>
+          <div class="result-meta" id="mktMeta">Nhập sản phẩm và nhấn tìm kiếm</div>
+        </div>
+        <div class="result-acts">
+          <button class="btn-sm btn-pptx" id="mktPptxBtn" onclick="exportMarketPPTX()" style="display:none">📊 Xuất PPTX</button>
+        </div>
+      </div>
+      <div class="result-body" id="mktBody">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">Khám phá thị trường</div>
+          <div class="empty-sub">Tìm giá từ Shopee, 1688, Taobao và các web quà tặng Việt Nam trong 1 lần tìm kiếm</div>
+        </div>
+      </div>
+      <div class="watermark">Emogifts | Dữ liệu từ AI web search | Giá tham khảo — cần xác nhận trực tiếp</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="keyModal" style="display:none">
+  <div class="modal">
+    <div class="modal-h">
+      <h3>🔑 Cài đặt Anthropic API Key</h3>
+      <p>Nhập key để kết nối Claude AI</p>
+    </div>
+    <div class="modal-b">
+      <label>API Key</label>
+      <input type="password" id="keyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+      <div class="modal-hint">
+        <strong>Lấy key tại:</strong> <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a><br>
+        → Đăng nhập → <strong>Create Key</strong> → Copy → Paste vào đây<br><br>
+        Key lưu trong máy tính của bạn, bảo mật tuyệt đối.
+      </div>
+      <div class="modal-acts">
+        <button class="btn-modal-save" onclick="saveKey()">✓ Lưu & Dùng ngay</button>
+        <button class="btn-modal-cancel" onclick="closeModal()">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+//  CATALOG DATA
+// ══════════════════════════════════════
+const CATALOG = `=== CATALOG EMOGIFTS ===
+1. CÔNG NGHỆ (11sp): Loa BT Hoco HC22, Pin sạc Hoco J100 10000mAh, Cáp 3in1 Remax, Tai nghe BT. Giá: 50k–500k
+2. GIA DỤNG (108sp): Bình trà Chu đậu S2 (530k), Cốc sứ Daiichi (55k), Áo mưa (73k), Bình giữ nhiệt inox, Ngâm chân (47k), Nồi inox, Chảo chống dính. Giá: 47k–800k
+3. DU LỊCH (7sp): Ví hộ chiếu, Túi mỹ phẩm, Gối cổ. Giá: 80k–300k
+4. VĂN PHÒNG (19sp): Bút ký hộp gỗ, Sổ da A5, Túi laptop, Sạc không dây, Đồng hồ bàn. Giá: 80k–600k
+5. MẸ & BÉ (9sp): Đồ chơi gỗ Montessori, Khăn sữa, Bình sữa. Giá: 80k–350k
+6. PHÁT MÃI (13sp): Móc khóa (15k-35k), Bút bi (8k-25k), Tập vở, Nón lưỡi trai, Túi canvas. Giá: 8k–80k
+7. ẤM CHÉN BÌNH CỐC (21sp): Cốc Ocean 0411 set6 (163k), Ấm trà sứ Minh Long, Bình thủy tinh, Cốc sứ logo (45k-120k), Thermos cao cấp (250k-450k). Giá: 45k–500k
+8. CẶP TÚI BALO VALI (5sp): Balo laptop 15.6" chống nước, Túi da PU doanh nhân, Vali 20". Giá: 200k–900k
+9. BIỂU TRƯNG LOGO (33sp): Cúp pha lê sao xanh (561k), Cúp sao vàng (400k), Đĩa đồng D14 (864k), Bằng khen (135k), Biểu trưng tốt nghiệp (60k), Huy chương (45.9k), Huy hiệu SHB (30k), Biểu trưng pha lê đế đen, Biểu trưng KL tròn QĐ. Giá: 30k–1.2tr
+THẾ MẠNH: In logo/tên, đóng gói sang, VAT, đấu thầu, giao đúng hạn. Hotline: 0912 068 999`;
+
+const FORMAT_INST = {
+  table:`Tạo BẢNG TƯ VẤN: STT | Tên sản phẩm | Đơn giá | Mô tả & USP | Phù hợp vì | Có in logo?\nSau đó thêm "Ghi chú tư vấn" và "Khuyến nghị ưu tiên".`,
+  proposal:`Đề xuất 3 nhóm:\n## 🥇 Nhóm chủ lực (3-4 sp ưu tiên)\n## 🥈 Phương án thay thế (2-3 sp)\n## 🎁 Gợi ý combo (1-2 set ghép)\nKết luận: chiến lược tư vấn.`,
+  email:`Viết EMAIL HOÀN CHỈNH:\nTIÊU ĐỀ: [hấp dẫn]\n---\n[Chào + giới thiệu Emogifts]\n[Bảng sp gợi ý]\n[Điểm khác biệt Emogifts]\n[CTA]\nTrân trọng,\n[Tên NVKD]\nEmogifts | 0912 068 999 | quatangcamxuc.bitrix24.shop`,
+  quote:`BÁO GIÁ SƠ BỘ:\nThông tin đơn hàng: KH | Dịp | SL | Thời gian giao\nBảng: STT | Sp | ĐVT | SL | Đơn giá | Thành tiền\nTổng | Chiết khấu % | Sau CK\n*Lưu ý: báo giá tham khảo*`
+};
+
+const PRESETS_D = {
+  bank:{ctype:'Ngân hàng / Tài chính',occ:'Tri ân khách hàng',budget:'300k – 600.000đ',qty:'Lớn (500–2k sp)',fmt:'proposal',notes:'In logo ngân hàng nổi, sang trọng chuyên nghiệp, đóng hộp đẹp, VAT đầy đủ'},
+  event:{ctype:'Tổ chức sự kiện',occ:'Hội nghị / Sự kiện',budget:'50k – 150.000đ',qty:'Vừa (50–500 sp)',fmt:'table',notes:'Giao 7-10 ngày, in logo sự kiện, gọn nhẹ trao tại hội trường'},
+  tet:{ctype:'Doanh nghiệp tư nhân',occ:'Tết Nguyên Đán',budget:'Combo nhiều mức',qty:'Lớn (500–2k sp)',fmt:'proposal',notes:'Sang trọng, hộp quà + thiệp Tết, in logo, 3 mức: NV/QL/VIP'},
+  edu:{ctype:'Trường học / Giáo dục',occ:'Khen thưởng nhân viên',budget:'Dưới 50.000đ',qty:'Lớn (500–2k sp)',fmt:'table',notes:'Huy chương cúp khen thưởng, khắc tên trường, VAT'},
+  military:{ctype:'Nhà nước / Quân đội',occ:'Kỷ niệm thành lập',budget:'300k – 600.000đ',qty:'Vừa (50–500 sp)',fmt:'proposal',notes:'Biểu trưng KL pha lê sang trọng, khắc ngày kỷ niệm + tên đơn vị'},
+  health:{ctype:'Y tế / Bệnh viện',occ:'Khen thưởng nhân viên',budget:'150k – 300.000đ',qty:'Vừa (50–500 sp)',fmt:'table',notes:'Ngày Thầy thuốc 27/2, thực dụng, in logo BV/PK'}
+};
+
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+let history = JSON.parse(localStorage.getItem('eg_hist')||'[]');
+let currentResult = '';
+let marketData = [];
+let selectedProducts = [];
+
+// ══════════════════════════════════════
+//  API KEY
+// ══════════════════════════════════════
+function getKey(){ return localStorage.getItem('eg_key')||'' }
+function openModal(){ document.getElementById('keyInput').value=getKey(); document.getElementById('keyModal').style.display='flex'; setTimeout(()=>document.getElementById('keyInput').focus(),100) }
+function closeModal(){ document.getElementById('keyModal').style.display='none' }
+function saveKey(){
+  const k=document.getElementById('keyInput').value.trim();
+  if(!k.startsWith('sk-')){ showToast('❌ Key không hợp lệ'); return }
+  localStorage.setItem('eg_key',k); updateKeyBtn(); closeModal(); showToast('✅ Đã lưu API key!')
+}
+function updateKeyBtn(){
+  const b=document.getElementById('keyBtn'), has=!!getKey();
+  b.className='key-btn '+(has?'key-set':'key-unset');
+  b.textContent=has?'🔑 Key đã cài':'🔑 Chưa có key';
+}
+document.getElementById('keyModal').addEventListener('click',e=>{ if(e.target.id==='keyModal')closeModal() });
+document.getElementById('keyInput').addEventListener('keydown',e=>{ if(e.key==='Enter')saveKey() });
+
+// ══════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════
+function switchTab(tab, el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-tuvan').className = tab==='tuvan' ? 'tab-section active' : 'tab-section';
+  document.getElementById('tab-market').className = tab==='market' ? 'tab-section active' : 'tab-section';
+}
+
+// ══════════════════════════════════════
+//  TAB 1: CONSULTATION
+// ══════════════════════════════════════
+function fillP(key){
+  const p=PRESETS_D[key]; if(!p)return;
+  document.getElementById('ctype').value=p.ctype;
+  document.getElementById('occ').value=p.occ;
+  document.getElementById('budget').value=p.budget;
+  document.getElementById('qty').value=p.qty;
+  document.getElementById('fmt').value=p.fmt;
+  document.getElementById('notes').value=p.notes;
+  document.getElementById('cname').focus();
+}
+
+async function generate(){
+  if(!checkKey()) return;
+  const name=document.getElementById('cname').value.trim();
+  const ctype=document.getElementById('ctype').value;
+  const occ=document.getElementById('occ').value;
+  const budget=document.getElementById('budget').value;
+  const qty=document.getElementById('qty').value;
+  const nump=document.getElementById('nump').value;
+  const fmt=document.getElementById('fmt').value;
+  const notes=document.getElementById('notes').value;
+  const label=name||ctype;
+
+  setLoading('gen', true);
+  setResultHead(label, `${occ} · ${budget} · ${qty}`);
+  showLoadingInResult('rBody');
+
+  const prompt=`Bạn là chuyên viên tư vấn quà tặng cao cấp của Emogifts.\n\nCATALOG:\n${CATALOG}\n\nKHÁCH HÀNG:\n- Tên/Cty: ${name||'Chưa có'}\n- Loại KH: ${ctype}\n- Dịp: ${occ}\n- Ngân sách/sp: ${budget}\n- Số lượng: ${qty}\n- Yêu cầu: ${notes||'Không có'}\n- Số sp gợi ý: ${nump}\n\nDỊNH DẠNG:\n${FORMAT_INST[fmt]}\n\nQUY TẮC: Chỉ dùng sp trong catalog. Giá khớp ngân sách. Luôn đề cập in logo. Kết thúc: "📞 0912 068 999 | quatangcamxuc.bitrix24.shop"`;
+
+  try{
+    const txt = await callClaude(prompt);
+    currentResult = txt;
+    renderAI('rBody', txt);
+    saveHist({id:Date.now(),label,occ,budget,time:fmtDate(),result:txt});
+    show('copyBtn'); show('pptxBtn');
+    showToast('✅ Đã tạo bảng tư vấn!');
+  }catch(e){ showErr('rBody', e.message) }
+  setLoading('gen', false);
+}
+
+// ══════════════════════════════════════
+//  TAB 2: MARKET RESEARCH
+// ══════════════════════════════════════
+function toggleSrc(el){ el.classList.toggle('active') }
+function getActiveSrcs(){
+  const all=['shopee','1688','taobao','web'];
+  return all.filter(s=>document.getElementById('src-'+s)?.classList.contains('active'));
+}
+
+async function searchMarket(){
+  if(!checkKey()) return;
+  const q=document.getElementById('searchQ').value.trim();
+  if(!q){ showToast('⚠️ Nhập tên sản phẩm cần tìm'); return }
+  const srcs=getActiveSrcs();
+  if(!srcs.length){ showToast('⚠️ Chọn ít nhất 1 nguồn'); return }
+  const price=document.getElementById('priceRange').value;
+  const moq=document.getElementById('moq').value;
+  const note=document.getElementById('searchNote').value;
+
+  const WORKER = 'https://emogifts-proxy.quatangcamxuc.workers.dev';
+
+  setLoading('mkt', true);
+  document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
+  document.getElementById('mktMeta').textContent=`${srcs.join(', ')} · ${price} · ${moq}`;
+  showLoadingInResult('mktBody','Đang tìm kiếm trên các sàn thương mại...','Tìm Shopee, 1688, Taobao','Phân tích và so sánh giá','Đề xuất chiến lược nhập hàng');
+
+  // Try real 1688 API first
+  let real1688 = null;
+  if (srcs.includes('1688')) {
+    try {
+      const r = await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
+      const d = await r.json();
+      if (d && !d.error && (d.data || d.itemList || d.result)) {
+        real1688 = d;
+      }
+    } catch(e) { console.log('1688 worker:', e.message); }
+  }
+
+  // Build prompt with real data if available
+  let realDataNote = '';
+  if (real1688) {
+    const items = real1688.data?.itemList || real1688.itemList || real1688.result || [];
+    if (items.length > 0) {
+      realDataNote = `\n\nDỮ LIỆU THỰC TỪ 1688 API (ưu tiên dùng data này):\n` +
+        items.slice(0,6).map((it,i) =>
+          `${i+1}. ${it.subject||it.title||it.name||'SP'} | Giá: ${it.priceInfo?.price||it.price||'?'} CNY | MOQ: ${it.minOrderQuantity||it.moq||1} | https://detail.1688.com/offer/${it.offerId||it.id||''}.html`
+        ).join('\n');
+    }
+  }
+
+  const srcDesc={
+    shopee:'Shopee Việt Nam (shopee.vn)',
+    '1688':'1688.com (xưởng sản xuất Trung Quốc)',
+    taobao:'Taobao (bán lẻ Trung Quốc)',
+    web:'Các web quà tặng doanh nghiệp Việt Nam (quatangso1.vn, giathuong.vn, v.v.)'
+  };
+  const srcList=srcs.map(s=>srcDesc[s]).join('\n- ');
+
+  const prompt=`Bạn là chuyên gia nghiên cứu giá quà tặng doanh nghiệp Việt Nam, có kiến thức sâu về thị trường nhập khẩu Trung Quốc.
+
+SẢN PHẨM: "${q}" | Ngân sách: ${price} | Số lượng: ${moq}${note?' | Yêu cầu: '+note:''}
+${realDataNote}
+
+NHIỆM VỤ — thực hiện 2 việc song song:
+
+1. SEARCH THỰC TẾ (web_search): Tìm giá từ web quà tặng Việt Nam
+   Query: "${q} in logo giá sỉ quà tặng doanh nghiệp"
+   Query: "${q} giá bán buôn quà tặng việt nam"
+   → Lấy tên đơn vị, giá niêm yết, giá sỉ từ kết quả tìm được
+
+2. PHÂN TÍCH CHUYÊN GIA: ${real1688 ? 'Dùng data 1688 THỰC ở trên để phân tích chính xác' : 'Ước tính giá 1688/Taobao từ kiến thức thị trường'}
+
+Trả về đúng format sau:
+
+## 📊 Nghiên cứu giá: "${q}"
+
+${real1688 ? `### 🏭 1688.com — Giá xưởng THỰC TẾ (từ API)
+| # | Tên sản phẩm | Giá (CNY) | Giá VNĐ (~3.500đ) | MOQ | Link |
+|---|---|---|---|---|---|
+[Điền từ dữ liệu thực ở trên — đủ 5-6 dòng]` : `### 🏭 Ước tính giá 1688 *(tham khảo)*
+| Phân khúc | Giá CNY | Giá VNĐ | MOQ |
+|---|---|---|---|
+[Ước tính dựa trên kiến thức thị trường]`}
+
+### 🌐 Đối thủ Việt Nam — Giá tìm được thực tế
+| Đơn vị | Sản phẩm | Giá lẻ | Giá sỉ (≥100c) | Link |
+|---|---|---|---|---|
+[Ít nhất 4-5 dòng từ kết quả web search]
+
+### 🛒 Ước tính Shopee VN
+| Phân khúc | Giá thấp | Giá TB | Giá cao |
+|---|---|---|---|
+| Shopee VN | | | |
+
+---
+## 💡 Chiến lược cho Emogifts
+
+**Giá nhập tối ưu:** [nguồn + mức giá cụ thể]
+**Giá bán đề xuất:** [có 35-50% margin]
+**Lợi nhuận đơn 500sp:** [(giá bán - giá nhập - ship) × 500 = ?đ]
+**Đối thủ VN yếu điểm:** [so với Emogifts]
+**Hành động ngay tuần này:**
+1. [Cụ thể]
+2. [Cụ thể]
+3. [Cụ thể]`;
+
+  try{
+    const txt = await callClaudeSearch(prompt);
+    renderAI('mktBody', txt);
+    show('mktPptxBtn');
+    currentResult = txt;
+    showToast('✅ Tìm kiếm hoàn tất!');
+  }catch(e){ showErr('mktBody', e.message) }
+  setLoading('mkt', false);
+}
+
+// ══════════════════════════════════════
+//  PPTX EXPORT
+// ══════════════════════════════════════
+async function exportPPTX(){
+  if(!currentResult){ showToast('⚠️ Chưa có kết quả để xuất'); return }
+  const btn=document.getElementById('pptxBtn');
+  btn.disabled=true; btn.textContent='⏳ Đang tạo...';
+
+  try{
+    const name=document.getElementById('cname').value||document.getElementById('ctype').value;
+    const occ=document.getElementById('occ').value;
+    const date=new Date().toLocaleDateString('vi-VN');
+    await buildPPTX(name, occ, date, currentResult, 'consultation');
+    showPPTXStatus(true,'✅ Xuất PowerPoint thành công! File đã được tải về.');
+    showToast('📊 PowerPoint đã tải về!');
+  }catch(e){
+    showPPTXStatus(false,'❌ Lỗi xuất PPTX: '+e.message);
+  }
+  btn.disabled=false; btn.innerHTML='📊 Xuất PowerPoint';
+}
+
+async function exportMarketPPTX(){
+  if(!currentResult){ showToast('⚠️ Chưa có kết quả để xuất'); return }
+  const q=document.getElementById('searchQ').value||'Nghiên cứu thị trường';
+  await buildPPTX(q,'Nghiên cứu giá thị trường',new Date().toLocaleDateString('vi-VN'),currentResult,'market');
+  showToast('📊 PowerPoint đã tải về!');
+}
+
+async function buildPPTX(title, subtitle, date, content, type){
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE';
+  pptx.author = 'Emogifts';
+  pptx.company = 'Emogifts — Quà Tặng Cảm Xúc';
+
+  const NAVY='0F1E3C', GOLD='C9A84C', GOLD2='E8C97A', WHITE='FFFFFF', CREAM='FAF7F2', GREY='8888AA';
+
+  // ── SLIDE 1: COVER ──────────────────────────
+  const s1 = pptx.addSlide();
+  s1.background={color:NAVY};
+  // Gold accent bar
+  s1.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.18,h:'100%',fill:{color:GOLD}});
+  // Company name
+  s1.addText('EMOGIFTS',{x:0.5,y:1.5,w:12,h:0.8,fontSize:52,bold:true,color:GOLD2,fontFace:'Georgia'});
+  s1.addText('Quà Tặng Cảm Xúc',{x:0.5,y:2.4,w:12,h:0.4,fontSize:16,color:WHITE,fontFace:'Calibri',charSpacing:6});
+  // Divider
+  s1.addShape(pptx.ShapeType.rect,{x:0.5,y:3.0,w:4,h:0.04,fill:{color:GOLD}});
+  // Title
+  s1.addText(title,{x:0.5,y:3.3,w:9,h:0.7,fontSize:26,bold:true,color:WHITE,fontFace:'Georgia'});
+  s1.addText(subtitle,{x:0.5,y:4.1,w:9,h:0.4,fontSize:16,color:GOLD2,fontFace:'Calibri'});
+  // Date + contact
+  s1.addText(`Ngày: ${date}   |   0912 068 999   |   quatangcamxuc.bitrix24.shop`,{x:0.5,y:6.6,w:12,h:0.3,fontSize:11,color:GREY,fontFace:'Calibri'});
+
+  // ── PARSE CONTENT INTO SECTIONS ─────────────
+  const sections = parseContentToSections(content);
+
+  // ── SLIDE 2: OVERVIEW / SUMMARY ─────────────
+  const s2 = pptx.addSlide();
+  s2.background={color:CREAM};
+  s2.addShape(pptx.ShapeType.rect,{x:0,y:0,w:'100%',h:1.1,fill:{color:NAVY}});
+  s2.addText(type==='consultation'?'📋 Bảng Tư Vấn Sản Phẩm':'📊 Kết Quả Nghiên Cứu Thị Trường',{x:0.5,y:0.2,w:12,h:0.6,fontSize:22,bold:true,color:GOLD2,fontFace:'Georgia'});
+  s2.addText(`${title} — ${subtitle}`,{x:0.5,y:0.75,w:12,h:0.28,fontSize:12,color:WHITE,fontFace:'Calibri'});
+
+  // Main content text
+  const cleanText = content.replace(/[#*`|]/g,' ').replace(/\s+/g,' ').substring(0,1200)+'...';
+  s2.addText(cleanText,{x:0.4,y:1.3,w:12.3,h:5.0,fontSize:12,color:'333344',fontFace:'Calibri',valign:'top',wrap:true});
+
+  // ── SLIDES 3+: SECTIONS ─────────────────────
+  sections.forEach((sec, i) => {
+    const sl = pptx.addSlide();
+    sl.background={color:i%2===0?WHITE:CREAM};
+    // Header bar
+    sl.addShape(pptx.ShapeType.rect,{x:0,y:0,w:'100%',h:1.1,fill:{color:i%2===0?NAVY:'1a2f55'}});
+    sl.addText(sec.heading||`Phần ${i+1}`,{x:0.5,y:0.2,w:12,h:0.6,fontSize:20,bold:true,color:GOLD2,fontFace:'Georgia'});
+    sl.addText(`${title} | ${date}`,{x:0.5,y:0.78,w:12,h:0.25,fontSize:10,color:WHITE+'88',fontFace:'Calibri'});
+    // Slide number badge
+    sl.addShape(pptx.ShapeType.rect,{x:12.2,y:0.15,w:0.8,h:0.6,fill:{color:GOLD},rectRadius:0.06});
+    sl.addText(`${i+3}`,{x:12.2,y:0.2,w:0.8,h:0.5,fontSize:18,bold:true,color:NAVY,align:'center',fontFace:'Georgia'});
+
+    if(sec.rows && sec.rows.length>0){
+      // TABLE SLIDE
+      const maxRows = Math.min(sec.rows.length, 8);
+      const tableData = [];
+      if(sec.headers) tableData.push(sec.headers.map(h=>({text:h,options:{bold:true,color:GOLD2,fill:NAVY,fontSize:11,fontFace:'Calibri'}})));
+      sec.rows.slice(0,maxRows).forEach((row,ri)=>tableData.push(row.map(c=>({text:String(c||''),options:{color:'222233',fontSize:10,fontFace:'Calibri',fill:ri%2===0?WHITE:'F5F4F0'}}))));
+      try{
+        sl.addTable(tableData,{x:0.4,y:1.3,w:12.3,colW:getColWidths(sec.headers?.length||3,12.3),border:{pt:0.5,color:'E8E4DC'},margin:0.06});
+      }catch(e){
+        sl.addText(sec.rows.map(r=>r.join(' | ')).join('\n'),{x:0.4,y:1.3,w:12.3,h:5,fontSize:11,color:'222233',fontFace:'Calibri',valign:'top',wrap:true});
+      }
+    }else{
+      // TEXT SLIDE
+      sl.addText(sec.content||'',{x:0.4,y:1.3,w:12.3,h:5.0,fontSize:12,color:'222233',fontFace:'Calibri',valign:'top',wrap:true,lineSpacingMultiple:1.3});
+    }
+
+    // Footer
+    sl.addShape(pptx.ShapeType.rect,{x:0,y:6.8,w:'100%',h:0.22,fill:{color:NAVY}});
+    sl.addText('Emogifts — Quà Tặng Cảm Xúc   |   0912 068 999   |   quatangcamxuc.bitrix24.shop',{x:0.4,y:6.82,w:12.3,h:0.18,fontSize:9,color:GOLD,fontFace:'Calibri'});
+  });
+
+  // ── FINAL SLIDE: CONTACT ─────────────────────
+  const sLast = pptx.addSlide();
+  sLast.background={color:NAVY};
+  sLast.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.18,h:'100%',fill:{color:GOLD}});
+  sLast.addText('🎁',{x:5.5,y:0.8,w:2,h:1.2,fontSize:64,align:'center'});
+  sLast.addText('Emogifts',{x:0.5,y:2.2,w:12,h:0.8,fontSize:38,bold:true,color:GOLD2,fontFace:'Georgia',align:'center'});
+  sLast.addText('Quà Tặng Cảm Xúc — Giải Pháp Trọn Gói',{x:0.5,y:3.1,w:12,h:0.4,fontSize:15,color:WHITE,fontFace:'Calibri',align:'center',charSpacing:2});
+  // Contact cards
+  const contacts=[['📞 Hotline','0912 068 999'],['🌐 Website','quatangcamxuc.bitrix24.shop'],['📧 Email','quatangcamxuc@gmail.com']];
+  contacts.forEach(([icon,val],i)=>{
+    const x=1.5+i*3.8;
+    sLast.addShape(pptx.ShapeType.rect,{x,y:4.0,w:3.2,h:1.3,fill:{color:'1a2f55'},rectRadius:0.12});
+    sLast.addText(icon,{x,y:4.1,w:3.2,h:0.4,fontSize:13,color:GOLD2,fontFace:'Calibri',align:'center'});
+    sLast.addText(val,{x,y:4.55,w:3.2,h:0.5,fontSize:12,bold:true,color:WHITE,fontFace:'Calibri',align:'center',wrap:true});
+  });
+  sLast.addText('Cảm ơn quý khách đã tin tưởng Emogifts!',{x:0.5,y:5.7,w:12,h:0.4,fontSize:14,color:GREY,fontFace:'Calibri',align:'center',italic:true});
+
+  // SAVE
+  const fname=`Emogifts_${title.replace(/[^a-zA-Z0-9\u00C0-\u024F\s]/g,'').trim().replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.pptx`;
+  await pptx.writeFile({fileName:fname});
+}
+
+function parseContentToSections(text){
+  const sections=[];
+  const parts=text.split(/^#{1,3}\s+/m).filter(p=>p.trim());
+  parts.forEach(part=>{
+    const lines=part.split('\n');
+    const heading=lines[0].trim();
+    const rest=lines.slice(1).join('\n').trim();
+    // Try to parse table
+    const tableLines=rest.split('\n').filter(l=>l.trim().startsWith('|'));
+    if(tableLines.length>2){
+      const rows=tableLines.filter(l=>!l.match(/^\|[\s\-:|]+\|$/)).map(l=>l.split('|').slice(1,-1).map(c=>c.trim()));
+      if(rows.length>1) return sections.push({heading,headers:rows[0],rows:rows.slice(1)});
+    }
+    sections.push({heading,content:rest.replace(/\*\*/g,'').replace(/\*/g,'').substring(0,800)});
+  });
+  return sections.slice(0,8); // max 8 content slides
+}
+
+function getColWidths(n, total){
+  const w=total/n;
+  return Array(n).fill(w);
+}
+
+function showPPTXStatus(ok, msg){
+  const el=document.getElementById('pptxStatus');
+  el.style.display='block';
+  el.className='pptx-status '+(ok?'pptx-ok':'pptx-err');
+  el.textContent=msg;
+  setTimeout(()=>el.style.display='none',5000);
+}
+
+// ══════════════════════════════════════
+//  CLAUDE API CALLS
+// ══════════════════════════════════════
+async function callClaude(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
+    throw new Error(e?.error?.message||`HTTP ${res.status}`);
+  }
+  const d=await res.json();
+  return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'';
+}
+
+async function callClaudeSearch(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':getKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:3000,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    if(res.status===401){localStorage.removeItem('eg_key');updateKeyBtn();}
+    throw new Error(e?.error?.message||`HTTP ${res.status}`);
+  }
+  const d=await res.json();
+  return d.content?.filter(b=>b.type==='text').map(b=>b.text).join('\n')||'Không có kết quả từ web search';
+}
+
+// ══════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════
+function checkKey(){
+  if(getKey()) return true;
+  openModal();
+  showToast('⚠️ Cần nhập API key trước');
+  return false;
+}
+function setLoading(type, on){
+  const id=type==='gen'?'genBtn':'mktBtn', txtId=type==='gen'?'genTxt':'mktTxt';
+  const icon=type==='gen'?'✨':'🔍', label=type==='gen'?'Tạo bảng tư vấn':'Tìm kiếm & phân tích giá';
+  document.getElementById(id).disabled=on;
+  document.getElementById(txtId).textContent=on?'Đang xử lý...':label;
+}
+function setResultHead(title, meta){
+  document.getElementById('rTitle').textContent=`Tư vấn — ${title}`;
+  document.getElementById('rMeta').textContent=meta;
+}
+function showLoadingInResult(bodyId, msg='Đang phân tích...', s1='Đối chiếu catalog', s2='Lọc sản phẩm phù hợp', s3='Soạn nội dung'){
+  document.getElementById(bodyId).innerHTML=`<div class="loading-state"><div class="loading-ring"></div><div class="loading-txt"><strong>${msg}</strong></div><div class="loading-steps"><div class="lstep"><div class="ldot"></div>${s1}</div><div class="lstep"><div class="ldot"></div>${s2}</div><div class="lstep"><div class="ldot"></div>${s3}</div></div></div>`;
+}
+function renderAI(bodyId, text){
+  let h=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^#{4}\s(.+)$/gm,'<h4>$1</h4>').replace(/^#{3}\s(.+)$/gm,'<h3>$1</h3>')
+    .replace(/^#{2}\s(.+)$/gm,'<h2>$1</h2>').replace(/^#{1}\s(.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^&gt;\s(.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^[-•]\s(.+)$/gm,'<li>$1</li>');
+  // Tables
+  h=h.replace(/(\|.+\|\n?)+/g,match=>{
+    const lines=match.trim().split('\n').filter(l=>l.trim()&&!l.match(/^\|[\s\-:|]+\|$/));
+    if(lines.length<2) return match;
+    const pr=l=>l.split('|').slice(1,-1).map(c=>c.trim());
+    const hd=pr(lines[0]).map(c=>`<th>${c}</th>`).join('');
+    const bd=lines.slice(1).map(l=>`<tr>${pr(l).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
+    return `<table><thead><tr>${hd}</tr></thead><tbody>${bd}</tbody></table>`;
+  });
+  h=h.replace(/\n\n+/g,'<br><br>').replace(/\n/g,'<br>');
+  document.getElementById(bodyId).innerHTML=`<div class="ai-result">${h}</div>`;
+}
+function showErr(bodyId, msg){
+  document.getElementById(bodyId).innerHTML=`<div style="padding:20px;background:#fdf0ee;border-radius:8px;margin:8px"><strong style="color:var(--red)">❌ Lỗi</strong><br><span style="font-size:13px;color:#922b21">${msg}</span><br><br><span style="font-size:12px;color:#666">Kiểm tra API key hoặc kết nối mạng rồi thử lại.</span></div>`;
+}
+function show(id){ document.getElementById(id).style.display='inline-flex' }
+function hide(id){ document.getElementById(id).style.display='none' }
+function copyResult(){
+  navigator.clipboard.writeText(currentResult).then(()=>{
+    const b=document.getElementById('copyBtn');
+    b.textContent='✅ Đã copy!'; setTimeout(()=>b.innerHTML='📋 Copy',1800);
+    showToast('📋 Đã copy nội dung!');
+  });
+}
+
+// ══════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════
+function saveHist(entry){
+  history.unshift(entry); if(history.length>20) history=history.slice(0,20);
+  localStorage.setItem('eg_hist',JSON.stringify(history));
+  renderHist();
+}
+function renderHist(){
+  const el=document.getElementById('histList');
+  if(!history.length){ el.innerHTML='<div class="hempty">Chưa có lịch sử</div>'; return }
+  el.innerHTML=history.map(h=>`<div class="hist-item" onclick="loadHist(${h.id})"><div class="hdot"></div><div class="hinfo"><div class="hname">${h.label} — ${h.occ}</div><div class="htime">${h.time} · ${h.budget}</div></div></div>`).join('');
+}
+function loadHist(id){
+  const e=history.find(h=>h.id===id); if(!e) return;
+  currentResult=e.result;
+  setResultHead(e.label,`${e.occ} · ${e.budget} · ${e.time}`);
+  renderAI('rBody',e.result); show('copyBtn'); show('pptxBtn');
+}
+function clearHist(){
+  if(!confirm('Xóa toàn bộ lịch sử?')) return;
+  history=[]; localStorage.removeItem('eg_hist'); renderHist(); showToast('🗑️ Đã xóa');
+}
+
+// ══════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════
+function fmtDate(){ return new Date().toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}) }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800) }
+
+// INIT
+updateKeyBtn();
+renderHist();
+if(!getKey()) setTimeout(openModal, 700);
+</script>
+</body>
+</html>
