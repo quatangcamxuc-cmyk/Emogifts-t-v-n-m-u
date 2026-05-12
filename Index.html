@@ -584,108 +584,136 @@ async function searchMarket(){
   const q=document.getElementById('searchQ').value.trim();
   if(!q){ showToast('⚠️ Nhập tên sản phẩm cần tìm'); return }
   const srcs=getActiveSrcs();
-  if(!srcs.length){ showToast('⚠️ Chọn ít nhất 1 nguồn'); return }
   const price=document.getElementById('priceRange').value;
   const moq=document.getElementById('moq').value;
   const note=document.getElementById('searchNote').value;
+  const WORKER='https://emogifts-proxy.quatangcamxuc.workers.dev';
 
-  const WORKER = 'https://emogifts-proxy.quatangcamxuc.workers.dev';
-
-  setLoading('mkt', true);
+  setLoading('mkt',true);
   document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
-  document.getElementById('mktMeta').textContent=`${srcs.join(', ')} · ${price} · ${moq}`;
-  showLoadingInResult('mktBody','Đang tìm kiếm trên các sàn thương mại...','Tìm Shopee, 1688, Taobao','Phân tích và so sánh giá','Đề xuất chiến lược nhập hàng');
+  document.getElementById('mktMeta').textContent=`1688 API + Web quà tặng VN`;
 
-  // Try real 1688 API first
-  let real1688 = null;
-  if (srcs.includes('1688')) {
-    try {
-      const r = await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
-      const d = await r.json();
-      if (d && !d.error && (d.data || d.itemList || d.result)) {
-        real1688 = d;
-        const items = d.data?.itemList || d.itemList || d.result || [];
-        last1688Data = items; // lưu lại cho PPTX
-      }
-    } catch(e) { console.log('1688 worker:', e.message); }
+  // BƯỚC 1: Gọi 1688 API thực — hiển thị trực tiếp
+  document.getElementById('mktBody').innerHTML=`<div class="loading-state"><div class="loading-ring"></div><div class="loading-txt"><strong>Đang lấy dữ liệu thực từ 1688...</strong></div></div>`;
+
+  let items1688=[], apiError='';
+  if(srcs.includes('1688')){
+    try{
+      const r=await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
+      const d=await r.json();
+      console.log('1688 raw data:', JSON.stringify(d).substring(0,500));
+      items1688 = d?.data?.itemList || d?.itemList || d?.result || d?.data || [];
+      if(!Array.isArray(items1688)) items1688=[];
+      last1688Data=items1688;
+    }catch(e){ apiError=e.message; }
   }
 
-  // Build prompt with real data if available
-  let realDataNote = '';
-  if (real1688) {
-    const items = real1688.data?.itemList || real1688.itemList || real1688.result || [];
-    if (items.length > 0) {
-      realDataNote = `\n\nDỮ LIỆU THỰC TỪ 1688 API (ưu tiên dùng data này):\n` +
-        items.slice(0,6).map((it,i) =>
-          `${i+1}. ${it.subject||it.title||it.name||'SP'} | Giá: ${it.priceInfo?.price||it.price||'?'} CNY | MOQ: ${it.minOrderQuantity||it.moq||1} | https://detail.1688.com/offer/${it.offerId||it.id||''}.html`
-        ).join('\n');
-    }
+  // BƯỚC 2: Render 1688 products trực tiếp (không qua Claude)
+  let html='';
+  if(items1688.length>0){
+    html+=`<div style="margin-bottom:20px">`;
+    html+=`<h2 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-bottom:4px">🏭 1688.com — ${items1688.length} sản phẩm thực tế</h2>`;
+    html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:12px">Tỷ giá: 1 CNY ≈ 3.500 VNĐ | Nhấn tên SP để xem trên 1688</p>`;
+    html+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
+    html+=`<thead><tr style="background:var(--navy)">
+      <th style="padding:9px 12px;color:var(--gold2);text-align:left;font-size:12px">#</th>
+      <th style="padding:9px 12px;color:var(--gold2);text-align:left">Tên sản phẩm</th>
+      <th style="padding:9px 12px;color:var(--gold2);text-align:right">Giá CNY</th>
+      <th style="padding:9px 12px;color:var(--gold2);text-align:right">Giá VNĐ</th>
+      <th style="padding:9px 12px;color:var(--gold2);text-align:center">MOQ</th>
+      <th style="padding:9px 12px;color:var(--gold2);text-align:center">Link</th>
+    </tr></thead><tbody>`;
+    items1688.slice(0,10).forEach((it,i)=>{
+      const name=it.subject||it.title||it.name||it.itemTitle||'Sản phẩm';
+      const priceCNY=it.priceInfo?.price||it.price||it.minPrice||'?';
+      const priceVND=priceCNY!=='?'?Math.round(parseFloat(priceCNY)*3500).toLocaleString('vi-VN')+'đ':'?';
+      const moqVal=it.minOrderQuantity||it.moq||it.minOrder||1;
+      const id=it.offerId||it.id||it.itemId||'';
+      const link=id?`https://detail.1688.com/offer/${id}.html`:`https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`;
+      const img=it.imageUrl||it.picUrl||it.mainPic||it.imgUrl||'';
+      const bg=i%2===0?'#fafaf8':'white';
+      html+=`<tr style="background:${bg}">
+        <td style="padding:8px 12px;color:var(--text3)">${i+1}</td>
+        <td style="padding:8px 12px;max-width:280px">
+          ${img?`<img src="${img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:8px" onerror="this.style.display='none'">`:''}
+          <span style="font-weight:500;color:var(--text)">${name.substring(0,60)}${name.length>60?'...':''}</span>
+        </td>
+        <td style="padding:8px 12px;text-align:right;font-weight:600;color:var(--gold)">¥${priceCNY}</td>
+        <td style="padding:8px 12px;text-align:right;font-weight:600;color:var(--navy)">${priceVND}</td>
+        <td style="padding:8px 12px;text-align:center;color:var(--text2)">${moqVal}+</td>
+        <td style="padding:8px 12px;text-align:center"><a href="${link}" target="_blank" style="color:var(--gold);font-weight:600;font-size:12px">Xem 1688 →</a></td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+    currentResult = `Tìm kiếm: ${q}\n1688 data: ${items1688.length} sản phẩm, giá ${items1688[0]?.priceInfo?.price||items1688[0]?.price||'?'} CNY`;
+    last1688Data = items1688;
+  } else {
+    html+=`<div style="padding:16px;background:#fff3cd;border-radius:8px;border-left:3px solid #e0a800;margin-bottom:16px">
+      <strong>⚠️ Chưa lấy được data 1688</strong><br>
+      <span style="font-size:13px">${apiError||'Worker chưa nhận được dữ liệu'} — Đang dùng AI phân tích thay thế</span>
+    </div>`;
   }
 
-  const srcDesc={
-    shopee:'Shopee Việt Nam (shopee.vn)',
-    '1688':'1688.com (xưởng sản xuất Trung Quốc)',
-    taobao:'Taobao (bán lẻ Trung Quốc)',
-    web:'Các web quà tặng doanh nghiệp Việt Nam (quatangso1.vn, giathuong.vn, v.v.)'
-  };
-  const srcList=srcs.map(s=>srcDesc[s]).join('\n- ');
+  document.getElementById('mktBody').innerHTML=`<div class="ai-result">${html}<div id="aiAnalysis"><div class="loading-state" style="min-height:100px"><div class="loading-ring"></div><div class="loading-txt">Claude đang tìm giá đối thủ VN + phân tích...</div></div></div></div>`;
+  show('mktPptxBtn');
 
-  const prompt=`Bạn là chuyên gia nghiên cứu giá quà tặng doanh nghiệp Việt Nam, có kiến thức sâu về thị trường nhập khẩu Trung Quốc.
+  // BƯỚC 3: Claude chỉ phân tích + tìm web VN (không tìm 1688 nữa)
+  const dataStr = items1688.length>0
+    ? items1688.slice(0,5).map(it=>`- ${it.subject||it.title||'SP'}: ¥${it.priceInfo?.price||it.price||'?'} CNY, MOQ ${it.minOrderQuantity||1}`).join('\n')
+    : 'Chưa có data 1688';
 
-SẢN PHẨM: "${q}" | Ngân sách: ${price} | Số lượng: ${moq}${note?' | Yêu cầu: '+note:''}
-${realDataNote}
+  const prompt=`Bạn là chuyên gia quà tặng doanh nghiệp Emogifts.
 
-NHIỆM VỤ — thực hiện 2 việc song song:
+Sản phẩm: "${q}" | ${price} | ${moq}${note?' | '+note:''}
 
-1. SEARCH THỰC TẾ (web_search): Tìm giá từ web quà tặng Việt Nam
-   Query: "${q} in logo giá sỉ quà tặng doanh nghiệp"
-   Query: "${q} giá bán buôn quà tặng việt nam"
-   → Lấy tên đơn vị, giá niêm yết, giá sỉ từ kết quả tìm được
+DATA 1688 ĐÃ CÓ:
+${dataStr}
 
-2. PHÂN TÍCH CHUYÊN GIA: ${real1688 ? 'Dùng data 1688 THỰC ở trên để phân tích chính xác' : 'Ước tính giá 1688/Taobao từ kiến thức thị trường'}
+NHIỆM VỤ (CHỈ làm 2 việc này, KHÔNG cần tìm 1688 nữa):
+1. Dùng web_search tìm giá đối thủ Việt Nam: "${q} quà tặng doanh nghiệp giá sỉ"
+2. Phân tích chiến lược kinh doanh cho Emogifts dựa trên data trên
 
-Trả về đúng format sau:
+Trả lời ngắn gọn theo format:
 
-## 📊 Nghiên cứu giá: "${q}"
+### 🌐 Giá đối thủ Việt Nam
+| Đơn vị | Sản phẩm | Giá lẻ | Giá sỉ | Link |
+[3-5 dòng từ web search]
 
-${real1688 ? `### 🏭 1688.com — Giá xưởng THỰC TẾ (từ API)
-| # | Tên sản phẩm | Giá (CNY) | Giá VNĐ (~3.500đ) | MOQ | Link |
-|---|---|---|---|---|---|
-[Điền từ dữ liệu thực ở trên — đủ 5-6 dòng]` : `### 🏭 Ước tính giá 1688 *(tham khảo)*
-| Phân khúc | Giá CNY | Giá VNĐ | MOQ |
-|---|---|---|---|
-[Ước tính dựa trên kiến thức thị trường]`}
-
-### 🌐 Đối thủ Việt Nam — Giá tìm được thực tế
-| Đơn vị | Sản phẩm | Giá lẻ | Giá sỉ (≥100c) | Link |
-|---|---|---|---|---|
-[Ít nhất 4-5 dòng từ kết quả web search]
-
-### 🛒 Ước tính Shopee VN
-| Phân khúc | Giá thấp | Giá TB | Giá cao |
-|---|---|---|---|
-| Shopee VN | | | |
-
----
-## 💡 Chiến lược cho Emogifts
-
-**Giá nhập tối ưu:** [nguồn + mức giá cụ thể]
-**Giá bán đề xuất:** [có 35-50% margin]
-**Lợi nhuận đơn 500sp:** [(giá bán - giá nhập - ship) × 500 = ?đ]
-**Đối thủ VN yếu điểm:** [so với Emogifts]
-**Hành động ngay tuần này:**
-1. [Cụ thể]
-2. [Cụ thể]
-3. [Cụ thể]`;
+### 💡 Chiến lược Emogifts
+**Giá nhập tốt nhất:** [từ 1688 data ở trên]
+**Giá bán đề xuất:** [margin 40-50%]
+**Lợi nhuận 500sp:** [tính cụ thể]
+**Lợi thế so đối thủ VN:** [2-3 điểm]
+**Hành động tuần này:** [3 bước cụ thể]`;
 
   try{
-    const txt = await callClaudeSearch(prompt);
-    renderAI('mktBody', txt);
-    show('mktPptxBtn');
-    currentResult = txt;
-    showToast('✅ Tìm kiếm hoàn tất!');
-  }catch(e){ showErr('mktBody', e.message) }
-  setLoading('mkt', false);
+    const txt=await callClaudeSearch(prompt);
+    currentResult += '\n\n'+txt;
+    const el=document.getElementById('aiAnalysis');
+    if(el){ el.innerHTML=`<div class="ai-result" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--cream2)">${renderAIString(txt)}</div>`; }
+    showToast('✅ Hoàn tất!');
+  }catch(e){
+    const el=document.getElementById('aiAnalysis');
+    if(el) el.innerHTML=`<div style="padding:12px;background:#fff3cd;border-radius:8px;font-size:13px">⚠️ Phân tích AI tạm thời không khả dụng: ${e.message}</div>`;
+  }
+  setLoading('mkt',false);
+}
+
+function renderAIString(text){
+  let h=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^#{4}\s(.+)$/gm,'<h4>$1</h4>').replace(/^#{3}\s(.+)$/gm,'<h3>$1</h3>')
+    .replace(/^#{2}\s(.+)$/gm,'<h2>$1</h2>').replace(/^#{1}\s(.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^[-•]\s(.+)$/gm,'<li>$1</li>');
+  h=h.replace(/(\|.+\|\n?)+/g,match=>{
+    const lines=match.trim().split('\n').filter(l=>l.trim()&&!l.match(/^\|[\s\-:|]+\|$/));
+    if(lines.length<2)return match;
+    const pr=l=>l.split('|').slice(1,-1).map(c=>c.trim());
+    const hd=pr(lines[0]).map(c=>`<th>${c}</th>`).join('');
+    const bd=lines.slice(1).map(l=>`<tr>${pr(l).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
+    return `<table><thead><tr>${hd}</tr></thead><tbody>${bd}</tbody></table>`;
+  });
+  return h.replace(/\n\n+/g,'<br><br>').replace(/\n/g,'<br>');
 }
 
 // ══════════════════════════════════════
