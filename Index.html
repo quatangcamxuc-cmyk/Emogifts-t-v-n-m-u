@@ -683,16 +683,16 @@ async function searchMarket(){
           const price=c?.Price?.OriginalPrice||c?.price?.OriginalPrice
             ||c?.priceInfo?.price||c?.OriginalPrice||c?.price||c?.Price||0;
 
-          // Dùng trực tiếp link từ API — chính xác nhất
-          const link = c?.ExternalItemUrl || c?.TaobaoItemUrl || c?.externalItemUrl || c?.taobaoItemUrl
-            || (()=>{
-              // Fallback: trích offer ID từ ExternalItemUrl nếu có
-              const urlStr = c?.ExternalItemUrl || c?.TaobaoItemUrl || '';
-              const match = urlStr.match(/offer\/(\d+)\.html/);
-              return match
-                ? `https://detail.1688.com/offer/${match[1]}.html`
-                : `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(q)}`;
-            })();
+          // Taobao dễ truy cập hơn 1688 với user ngoài TQ
+          const itemTitle = (c?.Title||c?.title||c?.subject||'').substring(0,60);
+          const rawId = c?.Id||c?.id||'';
+          const offerId = rawId.replace(/^[a-z]+-/i,'').replace(/\D/g,'');
+
+          // Ưu tiên: link 1688 trực tiếp → Taobao search → 1688 search
+          const direct1688 = offerId ? `https://detail.1688.com/offer/${offerId}.html` : '';
+          const taoSearch = `https://s.taobao.com/search?q=${encodeURIComponent(itemTitle||q)}`;
+          const link1688Search = `https://s.1688.com/selloffer/offerlist.htm?keywords=${encodeURIComponent(itemTitle||q)}`;
+          const link = direct1688 || taoSearch;
 
           // Real MOQ — MinOrderQuantity, not MasterQuantity (which is stock/sold)
           const moq = c?.MinOrderQuantity||c?.minOrderQuantity||c?.MinOrder||c?.minOrder||1;
@@ -761,7 +761,10 @@ async function searchMarket(){
         <td style="padding:8px 12px;text-align:right;font-weight:600;color:var(--gold)">¥${priceCNY}</td>
         <td style="padding:8px 12px;text-align:right;font-weight:600;color:var(--navy)">${priceVND}</td>
         <td style="padding:8px 12px;text-align:center;color:var(--text2)">${moqVal}+</td>
-        <td style="padding:8px 12px;text-align:center"><a href="${link}" target="_blank" style="color:var(--gold);font-weight:600;font-size:12px">Xem 1688 →</a></td>
+        <td style="padding:8px 12px;text-align:center">
+          <a href="${link}" target="_blank" style="color:var(--gold);font-weight:600;font-size:12px;display:block;margin-bottom:4px">1688 →</a>
+          <a href="${taoSearch}" target="_blank" style="color:#E24B4A;font-weight:600;font-size:11px">Taobao →</a>
+        </td>
       </tr>`;
     });
     html+=`</tbody></table></div>`;
