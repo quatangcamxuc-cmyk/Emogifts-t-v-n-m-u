@@ -887,9 +887,6 @@ async function exportMarketPPTX(){
     statusEl.textContent='❌ Lỗi: '+e.message;
     console.error('PPTX error:',e);
   }
-    statusEl.textContent='❌ Lỗi: ' + e.message;
-    console.error('PPTX error:', e);
-  }
   btn.disabled=false; btn.innerHTML='📊 Xuất PPTX';
 }
 
