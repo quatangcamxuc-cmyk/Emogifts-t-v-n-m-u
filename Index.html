@@ -4,7 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emogifts — Tư Vấn & Nghiên Cứu Thị Trường</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundled.js"></script>
+<script>
+// Load PptxGenJS động từ nhiều CDN
+window._pptxLoaded = false;
+async function ensurePptx() {
+  if (typeof PptxGenJS !== 'undefined') return true;
+  const cdns = [
+    'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundled.js',
+    'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundled.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundled.js'
+  ];
+  for (const cdn of cdns) {
+    try {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = cdn; s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      if (typeof PptxGenJS !== 'undefined') return true;
+    } catch(e) {}
+  }
+  return false;
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -610,17 +632,22 @@ async function searchMarket(){
   const note=document.getElementById('searchNote').value;
   const WORKER='https://emogifts-proxy.quatangcamxuc.workers.dev';
 
+  // Dịch từ khóa tiếng Việt sang tiếng Anh để 1688 API hiểu đúng
+  let searchQ = q;
+  try {
+    const transResp = await callClaude(`Dịch sang tiếng Anh ngắn gọn (chỉ trả về từ khóa, không giải thích): "${q}"`);
+    searchQ = transResp.replace(/["""'']/g,'').trim().split('\n')[0].substring(0,80);
+  } catch(e) { searchQ = q; }
+
   setLoading('mkt',true);
   document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
-  document.getElementById('mktMeta').textContent=`1688 API + Web quà tặng VN`;
-
-  // BƯỚC 1: Gọi 1688 API thực — hiển thị trực tiếp
-  document.getElementById('mktBody').innerHTML=`<div class="loading-state"><div class="loading-ring"></div><div class="loading-txt"><strong>Đang lấy dữ liệu thực từ 1688...</strong></div></div>`;
+  document.getElementById('mktMeta').textContent=`1688: "${searchQ}" | API + Web quà tặng VN`;
+  showLoadingInResult('mktBody','Đang lấy dữ liệu thực từ 1688...','Dịch từ khóa sang tiếng Anh','Gọi 1688 API','Lọc theo khoảng giá');
 
   let items1688=[], apiError='';
   if(srcs.includes('1688')){
     try{
-      const r=await fetch(`${WORKER}?q=${encodeURIComponent(q)}`);
+      const r=await fetch(`${WORKER}?q=${encodeURIComponent(searchQ)}`); // Dùng từ khóa đã dịch
       const d=await r.json();
 
       // Tìm array sản phẩm bằng cách thử từng path
@@ -805,19 +832,21 @@ function renderAIString(text){
 //  PPTX EXPORT
 // ══════════════════════════════════════
 async function exportPPTX(){
-  if(!currentResult){ showToast('⚠️ Chưa có kết quả để xuất'); return }
+  if(!currentResult){ showToast('⚠️ Tạo bảng tư vấn trước rồi mới xuất PPTX'); return }
   const btn=document.getElementById('pptxBtn');
-  btn.disabled=true; btn.textContent='⏳ Đang tạo...';
-
+  btn.disabled=true; btn.textContent='⏳ Đang tải thư viện...';
+  const ok=await ensurePptx();
+  if(!ok){ showPPTXStatus(false,'❌ Không tải được thư viện PPTX. Kiểm tra kết nối mạng!'); btn.disabled=false; btn.innerHTML='📊 Xuất PowerPoint'; return; }
+  btn.textContent='⏳ Đang tạo file...';
   try{
     const name=document.getElementById('cname').value||document.getElementById('ctype').value;
     const occ=document.getElementById('occ').value;
-    const date=new Date().toLocaleDateString('vi-VN');
-    await buildPPTX(name, occ, date, currentResult, 'consultation');
-    showPPTXStatus(true,'✅ Xuất PowerPoint thành công! File đã được tải về.');
+    await buildPPTX(name, occ, new Date().toLocaleDateString('vi-VN'), currentResult, 'consultation');
+    showPPTXStatus(true,'✅ Xuất PowerPoint thành công! File đã tải về.');
     showToast('📊 PowerPoint đã tải về!');
   }catch(e){
     showPPTXStatus(false,'❌ Lỗi xuất PPTX: '+e.message);
+    console.error(e);
   }
   btn.disabled=false; btn.innerHTML='📊 Xuất PowerPoint';
 }
@@ -827,35 +856,37 @@ async function exportMarketPPTX(){
     showToast('⚠️ Tìm kiếm sản phẩm trước rồi mới xuất PPTX được');
     return;
   }
-  const btn = document.getElementById('mktPptxBtn');
-  btn.disabled=true; btn.textContent='⏳ Đang tạo PPTX...';
+  const btn=document.getElementById('mktPptxBtn');
+  btn.disabled=true; btn.textContent='⏳ Đang tải thư viện...';
 
-  // Show status box
-  let statusEl = document.getElementById('mktPptxStatus');
+  let statusEl=document.getElementById('mktPptxStatus');
   if(!statusEl){
-    statusEl = document.createElement('div');
-    statusEl.id = 'mktPptxStatus';
+    statusEl=document.createElement('div');
+    statusEl.id='mktPptxStatus';
     statusEl.style.cssText='padding:10px 16px;border-radius:8px;font-size:13px;margin:10px 0';
     document.getElementById('mktBody').prepend(statusEl);
   }
-  statusEl.style.background='#e3f2fd';
-  statusEl.style.border='1px solid #90caf9';
-  statusEl.textContent='⏳ Đang tạo file PowerPoint...';
+  statusEl.style.cssText='padding:10px 16px;border-radius:8px;font-size:13px;margin:10px 0;background:#e3f2fd;border:1px solid #90caf9';
+  statusEl.textContent='⏳ Đang tải thư viện PPTX...';
 
-  try {
-    // Check PptxGenJS loaded
-    if(typeof PptxGenJS === 'undefined'){
-      throw new Error('Thư viện PptxGenJS chưa load. Thử refresh trang (Ctrl+Shift+R)');
-    }
+  const ok=await ensurePptx();
+  if(!ok){
+    statusEl.style.cssText='padding:10px 16px;border-radius:8px;font-size:13px;margin:10px 0;background:#fdecea;border:1px solid #ffcdd2';
+    statusEl.textContent='❌ Không tải được thư viện PPTX. Kiểm tra kết nối mạng!';
+    btn.disabled=false; btn.innerHTML='📊 Xuất PPTX'; return;
+  }
+  statusEl.textContent='⏳ Đang tạo file PowerPoint...';
+  try{
     const q=document.getElementById('searchQ').value||'Nghiên cứu thị trường';
     await buildMarketPPTX(q, last1688Data, currentResult);
-    statusEl.style.background='#e8f5e9';
-    statusEl.style.border='1px solid #a5d6a7';
+    statusEl.style.cssText='padding:10px 16px;border-radius:8px;font-size:13px;margin:10px 0;background:#e8f5e9;border:1px solid #a5d6a7';
     statusEl.textContent='✅ File PowerPoint đã tải về thành công!';
     showToast('📊 PowerPoint đã tải về!');
-  } catch(e) {
-    statusEl.style.background='#fdecea';
-    statusEl.style.border='1px solid #ffcdd2';
+  }catch(e){
+    statusEl.style.cssText='padding:10px 16px;border-radius:8px;font-size:13px;margin:10px 0;background:#fdecea;border:1px solid #ffcdd2';
+    statusEl.textContent='❌ Lỗi: '+e.message;
+    console.error('PPTX error:',e);
+  }
     statusEl.textContent='❌ Lỗi: ' + e.message;
     console.error('PPTX error:', e);
   }
