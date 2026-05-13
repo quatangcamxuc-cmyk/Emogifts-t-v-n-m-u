@@ -5,24 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emogifts — Tư Vấn & Nghiên Cứu Thị Trường</title>
 <script>
-// Load PptxGenJS động từ nhiều CDN
 window._pptxLoaded = false;
 async function ensurePptx() {
   if (typeof PptxGenJS !== 'undefined') return true;
   const cdns = [
     'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundled.js',
     'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundled.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundled.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/PptxGenJS/3.12.0/pptxgen.bundled.js',
+    'https://emogifts-proxy.quatangcamxuc.workers.dev/?target=pptxlib'
   ];
   for (const cdn of cdns) {
     try {
       await new Promise((res, rej) => {
         const s = document.createElement('script');
-        s.src = cdn; s.onload = res; s.onerror = rej;
+        s.src = cdn;
+        s.onload = () => setTimeout(res, 100);
+        s.onerror = rej;
+        s.crossOrigin = 'anonymous';
         document.head.appendChild(s);
       });
       if (typeof PptxGenJS !== 'undefined') return true;
-    } catch(e) {}
+      if (typeof window.PptxGenJS !== 'undefined') { window.PptxGenJS = window.PptxGenJS; return true; }
+    } catch(e) { console.log('CDN failed:', cdn, e.message); }
   }
   return false;
 }
@@ -712,17 +716,24 @@ async function searchMarket(){
       }
       last1688Data=items1688;
 
-      // Lọc theo khoảng giá đã chọn (giá VNĐ = CNY × 3500)
+      // Lọc theo khoảng giá — hiển thị tất cả nhưng đánh dấu sp phù hợp
       const priceVal = document.getElementById('priceRange').value;
+      let filteredItems = items1688;
+      let priceFilterNote = '';
       if(priceVal && priceVal !== '0-999999999'){
         const [minVND, maxVND] = priceVal.split('-').map(Number);
-        const before = items1688.length;
-        items1688 = items1688.filter(it => {
+        const matched = items1688.filter(it => {
           const vnd = it.price * 3500;
           return vnd >= minVND && vnd <= maxVND;
         });
-        if(items1688.length === 0 && before > 0){
-          apiError = `Không có sản phẩm nào trong khoảng giá đã chọn. Tìm thấy ${before} sp nhưng giá nằm ngoài khoảng lọc — thử chọn khoảng rộng hơn.`;
+        if(matched.length > 0){
+          filteredItems = matched;
+        } else {
+          // Không có sp nào khớp — hiện hết và thông báo
+          filteredItems = items1688;
+          const minF = minVND.toLocaleString('vi-VN');
+          const maxF = maxVND.toLocaleString('vi-VN');
+          priceFilterNote = `⚠️ Không có SP nào trong khoảng ${minF}–${maxF}đ. Hiển thị toàn bộ ${items1688.length} SP để tham khảo.`;
         }
       }
     }catch(e){ apiError=e.message; }
@@ -730,10 +741,11 @@ async function searchMarket(){
 
   // BƯỚC 2: Render 1688 products trực tiếp (không qua Claude)
   let html='';
-  if(items1688.length>0){
+  if(filteredItems.length>0){
     html+=`<div style="margin-bottom:20px">`;
-    html+=`<h2 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-bottom:4px">🏭 1688.com — ${items1688.length} sản phẩm thực tế</h2>`;
-    html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:12px">Tỷ giá: 1 CNY ≈ 3.500 VNĐ | Nhấn tên SP để xem trên 1688</p>`;
+    if(priceFilterNote) html+=`<div style="padding:10px 14px;background:#fff8e1;border-left:3px solid #f9a825;border-radius:0 8px 8px 0;font-size:13px;color:#5d4037;margin-bottom:12px">${priceFilterNote}</div>`;
+    html+=`<h2 style="font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-bottom:4px">🏭 1688.com — ${filteredItems.length} sản phẩm</h2>`;
+    html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:12px">Tỷ giá: 1 CNY ≈ 3.500 VNĐ | Dịch khóa: <em>${searchQ}</em></p>`;
     html+=`<table style="width:100%;border-collapse:collapse;font-size:13px">`;
     html+=`<thead><tr style="background:var(--navy)">
       <th style="padding:9px 12px;color:var(--gold2);text-align:left;font-size:12px">#</th>
@@ -743,7 +755,7 @@ async function searchMarket(){
       <th style="padding:9px 12px;color:var(--gold2);text-align:center">MOQ</th>
       <th style="padding:9px 12px;color:var(--gold2);text-align:center">Link</th>
     </tr></thead><tbody>`;
-    items1688.slice(0,10).forEach((it,i)=>{
+    filteredItems.slice(0,15).forEach((it,i)=>{
       const name=it.subject||it.title||it.name||it.itemTitle||'Sản phẩm';
       const priceCNY=it.priceInfo?.price||it.price||it.minPrice||'?';
       const priceVND=priceCNY!=='?'?Math.round(parseFloat(priceCNY)*3500).toLocaleString('vi-VN')+'đ':'?';
