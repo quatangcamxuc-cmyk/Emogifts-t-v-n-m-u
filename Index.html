@@ -636,10 +636,12 @@ async function searchMarket(){
   const note=document.getElementById('searchNote').value;
   const WORKER='https://emogifts-proxy.quatangcamxuc.workers.dev';
 
-  // Dịch từ khóa tiếng Việt sang tiếng Anh để 1688 API hiểu đúng
+  // Dịch từ khóa — timeout 8 giây
   let searchQ = q;
   try {
-    const transResp = await callClaude(`Dịch sang tiếng Anh ngắn gọn (chỉ trả về từ khóa, không giải thích): "${q}"`);
+    const transPromise = callClaude(`Translate to English keywords only, no explanation: "${q}"`);
+    const timeout = new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 8000));
+    const transResp = await Promise.race([transPromise, timeout]);
     searchQ = transResp.replace(/["""'']/g,'').trim().split('\n')[0].substring(0,80);
   } catch(e) { searchQ = q; }
 
@@ -647,6 +649,17 @@ async function searchMarket(){
   document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
   document.getElementById('mktMeta').textContent=`1688: "${searchQ}" | API + Web quà tặng VN`;
   showLoadingInResult('mktBody','Đang lấy dữ liệu thực từ 1688...','Dịch từ khóa sang tiếng Anh','Gọi 1688 API','Lọc theo khoảng giá');
+
+  try { // ← try/finally đảm bảo spinner luôn dừng
+    await doMarketSearch(q, searchQ, srcs, price, moq, note, WORKER);
+  } catch(e) {
+    showErr('mktBody', e.message);
+  } finally {
+    setLoading('mkt', false); // ← luôn chạy dù lỗi hay không
+  }
+}
+
+async function doMarketSearch(q, searchQ, srcs, price, moq, note, WORKER) {
 
   let items1688=[], apiError='';
   if(srcs.includes('1688')){
@@ -814,17 +827,19 @@ Trả lời NGẮN GỌN, không giải thích giới hạn, không từ chối:
 - Hành động tuần này: [2 bước]`;
 
   try{
-    const txt=await callClaudeSearch(prompt);
+    const txt=await Promise.race([
+      callClaudeSearch(prompt),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('AI timeout sau 30 giây')),30000))
+    ]);
     currentResult += '\n\n'+txt;
     const el=document.getElementById('aiAnalysis');
     if(el){ el.innerHTML=`<div class="ai-result" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--cream2)">${renderAIString(txt)}</div>`; }
     showToast('✅ Hoàn tất!');
   }catch(e){
     const el=document.getElementById('aiAnalysis');
-    if(el) el.innerHTML=`<div style="padding:12px;background:#fff3cd;border-radius:8px;font-size:13px">⚠️ Phân tích AI tạm thời không khả dụng: ${e.message}</div>`;
+    if(el) el.innerHTML=`<div style="padding:12px;background:#fff3cd;border-radius:8px;font-size:13px">⚠️ Phân tích AI không khả dụng: ${e.message}</div>`;
   }
-  setLoading('mkt',false);
-}
+} // ← đóng doMarketSearch
 
 function renderAIString(text){
   let h=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
