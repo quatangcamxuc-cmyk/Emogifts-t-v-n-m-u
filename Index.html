@@ -634,6 +634,11 @@ async function searchMarket(){
   const price=document.getElementById('priceRange').value;
   const moq=document.getElementById('moq').value;
   const note=document.getElementById('searchNote').value;
+  setLoading('mkt',true);
+  document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
+  document.getElementById('mktMeta').textContent=`1688 API + Web quà tặng VN`;
+  showLoadingInResult('mktBody','Đang xử lý...','Dịch từ khóa sang tiếng Anh','Gọi 1688 API','Lọc theo khoảng giá');
+
   const WORKER='https://emogifts-proxy.quatangcamxuc.workers.dev';
 
   // Dịch từ khóa — timeout 8 giây
@@ -643,28 +648,27 @@ async function searchMarket(){
     const timeout = new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 8000));
     const transResp = await Promise.race([transPromise, timeout]);
     searchQ = transResp.replace(/["""'']/g,'').trim().split('\n')[0].substring(0,80);
+    document.getElementById('mktMeta').textContent=`1688: "${searchQ}" | API + Web quà tặng VN`;
   } catch(e) { searchQ = q; }
 
-  setLoading('mkt',true);
-  document.getElementById('mktTitle').textContent=`Tìm kiếm: ${q}`;
-  document.getElementById('mktMeta').textContent=`1688: "${searchQ}" | API + Web quà tặng VN`;
-  showLoadingInResult('mktBody','Đang lấy dữ liệu thực từ 1688...','Dịch từ khóa sang tiếng Anh','Gọi 1688 API','Lọc theo khoảng giá');
-
-  try { // ← try/finally đảm bảo spinner luôn dừng
+  try {
     await doMarketSearch(q, searchQ, srcs, price, moq, note, WORKER);
   } catch(e) {
     showErr('mktBody', e.message);
   } finally {
-    setLoading('mkt', false); // ← luôn chạy dù lỗi hay không
+    setLoading('mkt', false);
   }
 }
 
 async function doMarketSearch(q, searchQ, srcs, price, moq, note, WORKER) {
 
-  let items1688=[], apiError='';
+  let items1688=[], apiError='', filteredItems=[], priceFilterNote='';
   if(srcs.includes('1688')){
     try{
-      const r=await fetch(`${WORKER}?q=${encodeURIComponent(searchQ)}`); // Dùng từ khóa đã dịch
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000); // 15 giây timeout
+      const r=await fetch(`${WORKER}?q=${encodeURIComponent(searchQ)}`, { signal: ctrl.signal });
+      clearTimeout(timer);
       const d=await r.json();
 
       // Tìm array sản phẩm bằng cách thử từng path
@@ -731,8 +735,8 @@ async function doMarketSearch(q, searchQ, srcs, price, moq, note, WORKER) {
 
       // Lọc theo khoảng giá — hiển thị tất cả nhưng đánh dấu sp phù hợp
       const priceVal = document.getElementById('priceRange').value;
-      let filteredItems = items1688;
-      let priceFilterNote = '';
+      filteredItems = items1688;
+      priceFilterNote = '';
       if(priceVal && priceVal !== '0-999999999'){
         const [minVND, maxVND] = priceVal.split('-').map(Number);
         const matched = items1688.filter(it => {
